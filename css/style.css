@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════
    MONSOON WATCH — Design System
 ═══════════════════════════════════════════════════════ */
 :root {
@@ -243,111 +243,139 @@ html, body { height: 100%; background: var(--bg); color: var(--txt); font-family
 .btn-primary { background: var(--acc); color: #000; border: none; border-radius: var(--r); padding: .7rem 2rem; font-family: var(--fh); font-size: .9rem; font-weight: 700; cursor: pointer; transition: background .15s, transform .1s; }
 .btn-primary:hover { background: #7dd3fc; transform: translateY(-1px); }
 
+
 /* ═══ RESPONSIVE ═══════════════════════════════════════ */
-@media (max-width: 768px) {
-  html, body { overflow: auto; }
-  #game-screen { height: 100vh; overflow: hidden; position: relative; }
-  .game-layout { flex-direction: column; overflow: hidden; height: calc(100vh - 44px); }
-  .map-col { border-right: none; border-bottom: 1px solid var(--bdr); flex: none; height: 55vh; }
-  .map-wrap { height: 100%; flex: 1; }
-  .data-panel { display: none; } /* shown in bottom sheet on mobile */
-  .right-col { display: none; }  /* shown in bottom sheet on mobile */
-  .bottom-sheet { display: block; }
-  .hud-logo { display: none; }
-  .data-row { grid-template-columns: repeat(2, 1fr); }
+
+/* ── Tablet (≤900px) ── */
+@media (max-width: 900px) {
+  .right-col { width: 320px; }
+  .hud-streak { display: none; }
 }
 
+/* ── Mobile (≤768px): single-column, natural scroll ── */
+@media (max-width: 768px) {
+  html, body { overflow: auto; height: auto; }
+
+  #game-screen {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-layout {
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+    flex: none;
+  }
+
+  /* Map: fixed height strip */
+  .map-col {
+    border-right: none;
+    border-bottom: 1px solid var(--bdr);
+    flex: none;
+    height: 52vw;
+    min-height: 200px;
+    max-height: 300px;
+  }
+  .map-wrap { height: 100%; }
+
+  /* Data panel visible, 2-col */
+  .data-panel { display: block; }
+  .data-row { grid-template-columns: repeat(2, 1fr); }
+
+  /* Right col: full width inline */
+  .right-col {
+    width: 100%;
+    flex: none;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* No bottom sheet needed */
+  .bottom-sheet { display: none !important; }
+  .bs-backdrop  { display: none !important; }
+
+  /* HUD compact */
+  .hud { height: 40px; padding: .35rem .75rem; gap: .5rem; }
+  .hud-logo { display: none; }
+  .hud-streak { display: none; }
+  .hud-stat.dim { display: none; }
+
+  /* Larger tap targets */
+  .choice-btn { padding: .75rem .85rem; font-size: .8rem; }
+  .btn-ghost  { padding: .5rem .85rem; }
+  .btn-next   { padding: .75rem 1.5rem; }
+
+  /* Tighter padding on panels */
+  .sc-header    { padding: .75rem .75rem .5rem; }
+  .question-box { padding: .75rem .75rem; }
+  .choices      { padding: .5rem .75rem; }
+  .action-row   { padding: .5rem .75rem; }
+  .feedback     { padding: .75rem .75rem 1.5rem; }
+
+  /* Timer smaller */
+  .timer-wrap { width: 44px; height: 44px; }
+  .timer-num  { font-size: .8rem; }
+}
+
+/* ── Small phones (≤480px) ── */
 @media (max-width: 480px) {
-  .level-grid { grid-template-columns: 1fr 1fr; }
-  .title-logo { font-size: 3rem; }
-  .debrief-stats { gap: 1rem; }
+  .level-grid  { grid-template-columns: 1fr 1fr; }
+  .title-logo  { font-size: 2.8rem; }
+  .title-sub   { margin-bottom: 1.5rem; }
+  .map-col     { max-height: 240px; }
+  .data-val    { font-size: .8rem; }
+  .hud-badge   { display: none; }
+  .choice-btn  { font-size: .78rem; }
+  .q-decision  { font-size: .82rem; }
+  .q-situation { font-size: .76rem; }
+  .debrief-stats { gap: .75rem; }
+  .debrief-title { font-size: 1.5rem; }
+  .stat-n      { font-size: 1.4rem; }
+  .topic-grid  { grid-template-columns: 1fr; }
+  .history-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ═══ PWA INSTALL BANNER ═══════════════════════════════ */
 .install-banner {
-  position: fixed;
-  bottom: 1rem;
-  left: 50%;
+  position: fixed; bottom: 1rem; left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
-  width: calc(100% - 2rem);
-  max-width: 420px;
+  z-index: 999; width: calc(100% - 2rem); max-width: 420px;
   animation: slideUp .35s cubic-bezier(.4,0,.2,1);
 }
-
 @keyframes slideUp {
   from { opacity:0; transform: translateX(-50%) translateY(20px); }
   to   { opacity:1; transform: translateX(-50%) translateY(0); }
 }
-
 .install-banner-inner {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  background: var(--s2);
-  border: 1px solid var(--bdr2);
-  border-radius: var(--r2);
-  padding: .75rem 1rem;
+  display: flex; align-items: center; gap: .75rem;
+  background: var(--s2); border: 1px solid var(--bdr2);
+  border-radius: var(--r2); padding: .75rem 1rem;
   box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(56,189,248,.1);
 }
-
-.install-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: .5rem;
-  flex-shrink: 0;
-}
-
-.install-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: .1rem;
-}
-
-.install-text strong {
-  font-family: var(--fh);
-  font-size: .85rem;
-  color: #fff;
-}
-
-.install-text span {
-  font-size: .7rem;
-  color: var(--txt2);
-}
-
+.install-icon { width: 40px; height: 40px; border-radius: .5rem; flex-shrink: 0; }
+.install-text { flex: 1; display: flex; flex-direction: column; gap: .1rem; }
+.install-text strong { font-family: var(--fh); font-size: .85rem; color: #fff; }
+.install-text span   { font-size: .7rem; color: var(--txt2); }
 .install-btn {
-  background: var(--acc);
-  color: #000;
-  border: none;
-  border-radius: var(--r);
-  padding: .4rem 1rem;
-  font-family: var(--fh);
-  font-size: .8rem;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background .15s;
+  background: var(--acc); color: #000; border: none;
+  border-radius: var(--r); padding: .4rem 1rem;
+  font-family: var(--fh); font-size: .8rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; transition: background .15s;
 }
-
 .install-btn:hover { background: #7dd3fc; }
-
 .install-dismiss {
-  background: transparent;
-  border: none;
-  color: var(--txt3);
-  font-size: .9rem;
-  cursor: pointer;
-  padding: .2rem .4rem;
-  line-height: 1;
-  flex-shrink: 0;
+  background: transparent; border: none; color: var(--txt3);
+  font-size: .9rem; cursor: pointer; padding: .2rem .4rem; line-height: 1; flex-shrink: 0;
 }
-
 .install-dismiss:hover { color: var(--txt2); }
 
 /* Safe area insets for notched phones */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .install-banner { bottom: calc(1rem + env(safe-area-inset-bottom)); }
-  .bottom-sheet   { padding-bottom: env(safe-area-inset-bottom); }
-  .hud            { padding-top: env(safe-area-inset-top); }
+  .hud { padding-top: max(.35rem, env(safe-area-inset-top)); }
 }
