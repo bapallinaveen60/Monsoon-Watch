@@ -2,7 +2,8 @@
   "name": "Monsoon Watch",
   "short_name": "Monsoon Watch",
   "description": "Satellite Meteorology Strategy Game — India Operations. Read real satellite data, make forecast decisions, learn cloud physics.",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#080d18",
@@ -23,13 +24,13 @@
     {
       "name": "Beginner Mission",
       "short_name": "Beginner",
-      "url": "/index.html?level=beginner",
+      "url": "./index.html?level=beginner",
       "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     },
     {
       "name": "Master Mission",
       "short_name": "Master",
-      "url": "/index.html?level=master",
+      "url": "./index.html?level=master",
       "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     }
   ]
