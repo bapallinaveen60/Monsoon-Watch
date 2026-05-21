@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#0d1e3a"/>
+      <stop offset="100%" stop-color="#080d18"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(56,189,248,0.2)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="128" height="128" rx="23" fill="url(#bg)"/>
+
+  <!-- Glow -->
+  <circle cx="64" cy="64" r="57.6" fill="url(#glow)"/>
+
+  <!-- Radar rings -->
+  <circle cx="64" cy="64" r="28" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="1.024"/><circle cx="64" cy="64" r="49" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="1.024"/><circle cx="64" cy="64" r="69" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="1.024"/>
+
+  <!-- Sweep wedge -->
+  <path d="M64,64 L125.44,64 A61.44,61.44 0 0,0 117.20860080851591,33.28 Z"
+    fill="rgba(56,189,248,0.18)"/>
+
+  <!-- Sweep line -->
+  <line x1="64" y1="64" x2="125.44" y2="64"
+    stroke="rgba(56,189,248,0.7)" stroke-width="1.536" stroke-linecap="round"/>
+
+  <!-- Center dot -->
+  <circle cx="64" cy="64" r="3.2" fill="#38bdf8"/>
+
+  <!-- Text: MW -->
+  <text x="64" y="67"
+    font-family="Arial Black, sans-serif"
+    font-size="36" font-weight="900"
+    fill="#ffffff" text-anchor="middle"
+    letter-spacing="-1">MW</text>
+
+  <!-- Text: subtitle -->
+  <text x="64" y="87"
+    font-family="Arial, sans-serif"
+    font-size="13" font-weight="400"
+    fill="rgba(56,189,248,0.8)" text-anchor="middle"
+    letter-spacing="2">MONSOON</text>
+</svg>

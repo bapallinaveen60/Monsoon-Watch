@@ -24,8 +24,9 @@ function _drain() {
   if (_busy || _queue.length === 0) return;
   _busy = true;
   const { fn, resolve, reject } = _queue.shift();
+
   fn().then(resolve, reject).finally(() => {
-    setTimeout(() => { _busy = false; _drain(); }, 800);
+    setTimeout(() => { _busy = false; _drain(); }, 900);
   });
 }
 
@@ -67,8 +68,8 @@ export function buildImageUrl(scenario, band) {
 
 /**
  * Fetch and cache a real satellite image for a scenario + band.
+ * Queued (900ms spacing) + exponential backoff on 429 rate limit.
  * Returns a Promise<HTMLImageElement>.
- * Requests are queued to avoid rate-limiting.
  */
 export function fetchSatImage(scenario, band) {
   const key = `${scenario.id}:${band}`;
@@ -76,13 +77,33 @@ export function fetchSatImage(scenario, band) {
 
   const url = buildImageUrl(scenario, band);
 
-  return _enqueue(() => new Promise((resolve, reject) => {
+  return _enqueue(() => _fetchWithRetry(url, key, 3));
+}
+
+function _fetchWithRetry(url, cacheKey, retriesLeft, delay = 1200) {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload  = () => { _cache.set(key, img); resolve(img); };
-    img.onerror = () => reject(new Error('Image load failed: ' + url));
+
+    img.onload = () => {
+      _cache.set(cacheKey, img);
+      resolve(img);
+    };
+
+    img.onerror = () => {
+      if (retriesLeft > 0) {
+        // Exponential backoff: 1.2s → 2.4s → 4.8s
+        setTimeout(() => {
+          _fetchWithRetry(url, cacheKey, retriesLeft - 1, delay * 2)
+            .then(resolve, reject);
+        }, delay);
+      } else {
+        reject(new Error('Image failed after retries: ' + url));
+      }
+    };
+
     img.src = url;
-  }));
+  });
 }
 
 // ── Per-scenario metadata: date + bounding box ─────────

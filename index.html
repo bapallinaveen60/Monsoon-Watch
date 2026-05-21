@@ -2,8 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Monsoon Watch</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#080d18" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Monsoon Watch" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png" />
+
+  <!-- SEO / share -->
+  <meta name="description" content="Satellite Meteorology Strategy Game — India Operations. Read real satellite data, make forecast decisions." />
+  <meta property="og:title" content="Monsoon Watch" />
+  <meta property="og:description" content="Satellite Meteorology Strategy Game — India Operations" />
+  <meta property="og:image" content="icons/icon-512.png" />
+
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -290,6 +307,77 @@
   </div>
 </div>
 
+<!-- Install banner -->
+<div id="install-banner" class="install-banner hide">
+  <div class="install-banner-inner">
+    <img src="icons/icon-72.png" class="install-icon" alt="Monsoon Watch icon" />
+    <div class="install-text">
+      <strong>Add to Home Screen</strong>
+      <span>Play offline, anytime</span>
+    </div>
+    <button class="install-btn" onclick="_installApp()">Install</button>
+    <button class="install-dismiss" onclick="_dismissInstall()" aria-label="Dismiss">✕</button>
+  </div>
+</div>
+
 <script type="module" src="js/main.js"></script>
+
+<script>
+// ── Service Worker registration ────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        console.log('[SW] Registered:', reg.scope);
+        // Notify SW to skip waiting when a new version is found
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker?.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  });
+}
+
+// ── Install prompt (Add to Home Screen) ───────────────
+let _deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  // Show install banner after a short delay
+  setTimeout(_showInstallBanner, 3000);
+});
+
+function _showInstallBanner() {
+  if (!_deferredPrompt) return;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.classList.remove('hide');
+}
+
+window.addEventListener('appinstalled', () => {
+  _deferredPrompt = null;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.classList.add('hide');
+});
+
+// Wired up by the banner button
+window._installApp = async function() {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  const { outcome } = await _deferredPrompt.userChoice;
+  console.log('[PWA] Install outcome:', outcome);
+  _deferredPrompt = null;
+  document.getElementById('install-banner')?.classList.add('hide');
+};
+
+window._dismissInstall = function() {
+  document.getElementById('install-banner')?.classList.add('hide');
+};
+</script>
 </body>
 </html>
