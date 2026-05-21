@@ -2,134 +2,294 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Monsoon Watch</title>
-        <link rel="stylesheet" href="css/style.css" />
-          <style>@import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne&display=swap');</style>
-          </head>
-          <body>
-            <!-- SCREEN 1: TITLE -->
-              <div id="title-screen" class="screen">
-                  <h1 class="logo" style="color:var(--acc);font-family:var(--fh);font-size:3rem;">MONSOON WATCH</h1>
-                      <p class="tagline" style="font-family:var(--fm);">Satellite Meteorology Strategy · India</p>
-                          <div class="grid level-grid">
-                                <div class="card level-card" data-level="beginner">
-                                        <span class="pill acc">Beginner</span>
-                                                <h3>Field Observer</h3>
-                                                        <p>20 questions · India scenarios</p>
-                                                              </div>
-                                                                    <div class="card level-card" data-level="intermediate">
-                                                                            <span class="pill grn">Intermediate</span>
-                                                                                    <h3>Duty Analyst</h3>
-                                                                                            <p>20 questions · India scenarios</p>
-                                                                                                  </div>
-                                                                                                        <div class="card level-card" data-level="advanced">
-                                                                                                                <span class="pill org">Advanced</span>
-                                                                                                                        <h3>Senior Forecaster</h3>
-                                                                                                                                <p>20 questions · India scenarios</p>
-                                                                                                                                      </div>
-                                                                                                                                            <div class="card level-card" data-level="master">
-                                                                                                                                                    <span class="pill pur">Master</span>
-                                                                                                                                                            <h3>Director</h3>
-                                                                                                                                                                    <p>20 questions · India scenarios</p>
-                                                                                                                                                                          </div>
-                                                                                                                                                                              </div>
-                                                                                                                                                                                  <div class="api-key-section flex">
-                                                                                                                                                                                        <input type="password" id="api-key-input" placeholder="Enter Anthropic API Key (sk-ant-...)" />
-                                                                                                                                                                                              <button id="save-key-btn">Save Key</button>
-                                                                                                                                                                                                    <span id="key-status"></span>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                            <button id="launch-btn" class="hide">LAUNCH MISSION</button>
-                                                                                                                                                                                                                <p>You can jump between sections anytime.</p>
-                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                  
-                                                                                                                                                                                                                    <!-- SCREEN 2: GAME -->
-                                                                                                                                                                                                                      <div id="game-screen" class="screen hide">
-                                                                                                                                                                                                                          <header class="flex" style="background:var(--surf2);padding:.5rem;">
-                                                                                                                                                                                                                                <span class="logo" style="color:var(--acc);font-family:var(--fh);">MONSOON WATCH</span>
-                                                                                                                                                                                                                                      <span class="spacer flex"></span>
-                                                                                                                                                                                                                                            <span id="level-badge" class="pill acc"></span>
-                                                                                                                                                                                                                                                  <div class="prog" style="flex:2;margin:0 .5rem;">
-                                                                                                                                                                                                                                                          <div id="prog-bar"></div>
-                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                      <span id="score-hud"></span>
-                                                                                                                                                                                                                                                                            <span id="q-hud"></span>
-                                                                                                                                                                                                                                                                                  <span id="acc-hud"></span>
-                                                                                                                                                                                                                                                                                        <button id="section-btn">⇄ SECTIONS</button>
-                                                                                                                                                                                                                                                                                            </header>
-                                                                                                                                                                                                                                                                                                <main class="main">
-                                                                                                                                                                                                                                                                                                      <section id="map-panel">
-                                                                                                                                                                                                                                                                                                              <canvas id="sat-map"></canvas>
-                                                                                                                                                                                                                                                                                                                      <div class="map-overlay top-left">Satellite View</div>
-                                                                                                                                                                                                                                                                                                                              <div class="map-overlay top-right">
-                                                                                                                                                                                                                                                                                                                                        <button id="band-ir" class="pill acc">IR 11μm</button>
-                                                                                                                                                                                                                                                                                                                                                  <button id="band-wv" class="pill">WV 6.2μm</button>
-                                                                                                                                                                                                                                                                                                                                                            <button id="band-btd" class="pill">BTD</button>
-                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                          </section>
-                                                                                                                                                                                                                                                                                                                                                                                <section id="right-panel">
-                                                                                                                                                                                                                                                                                                                                                                                        <section id="sc-header">
-                                                                                                                                                                                                                                                                                                                                                                                                  <small id="sc-day"></small>
-                                                                                                                                                                                                                                                                                                                                                                                                            <h2 id="sc-title"></h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="sc-region"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                              </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                      <section id="ai-brief" class="flex" style="align-items:center;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="dot"></span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                          <span style="margin-left:.5rem;">MET ADVISOR — AI BRIEFING</span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="ai-box" class="ai-box"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <span id="api-status" class="pill"></span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button id="hint-btn" class="hide">↗ Ask for a hint</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <section id="readings" class="card">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h3>SATELLITE READINGS</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="grid2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div>TB_11: <span id="val-tb"></span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div>BTD1: <span id="val-btd1"></span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div>ΔBTD: <span id="val-delta"></span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div>Storm Height: <span id="val-stormh"></span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div>Rain Rate</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="prog" style="margin:.25rem 0;"><div id="rain-bar"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div>Storm Height %</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="prog"><div id="hgt-bar"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <section id="decision" class="card">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h3>⚡ ISSUE FORECAST DECISION</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <p id="question"></p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div id="choices"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <button id="skip-btn" class="hide">Skip this question →</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </main>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <!-- SCREEN 3: SECTION MODAL -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div id="section-modal" class="modal hide">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="modal-inner">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h2>Choose Section</h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="grid4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div class="card" data-level="beginner"><h4>Beginner</h4><div class="status"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="card" data-level="intermediate"><h4>Intermediate</h4><div class="status"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div class="card" data-level="advanced"><h4>Advanced</h4><div class="status"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="card" data-level="master"><h4>Master</h4><div class="status"></div></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <button class="close">✕ Cancel</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <!-- SCREEN 4: DEBRIEF -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="debrief-screen" class="screen hide">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h2 id="debrief-title"></h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="ring">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <svg width="120" height="120"><circle cx="60" cy="60" r="52" stroke="var(--gold)" stroke-width="8" fill="none" stroke-dasharray="327" stroke-dashoffset="327"></circle></svg>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="score" id="final-score"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <p id="accuracy-summary"></p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="history grid4"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button id="play-again">Play Again</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button id="change-section">Change Section</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <script type="module" src="js/main.js"></script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </html>>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monsoon Watch</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 1 — TITLE / LEVEL SELECT
+═══════════════════════════════════════════════════════ -->
+<div id="title-screen" class="screen">
+  <div class="title-bg"></div>
+  <div class="title-content">
+    <div class="title-eyebrow">INSAT-3D · GPM · KALPANA-1</div>
+    <h1 class="title-logo">MONSOON<br>WATCH</h1>
+    <p class="title-sub">Satellite Meteorology · India Operations</p>
+
+    <div class="level-grid">
+      <button class="level-card" data-level="beginner">
+        <span class="lc-badge" style="background:var(--grn);color:#000">BEGINNER</span>
+        <span class="lc-role">Field Observer</span>
+        <span class="lc-desc">Cloud types · Rain detection · Basic satellite physics</span>
+        <span class="lc-pts">50 pts / correct · 45s timer</span>
+        <div class="lc-preview hide" id="preview-beginner"></div>
+      </button>
+      <button class="level-card" data-level="intermediate">
+        <span class="lc-badge" style="background:var(--acc);color:#000">INTERMEDIATE</span>
+        <span class="lc-role">Duty Analyst</span>
+        <span class="lc-desc">BTD classification · Algorithm design · Storm life cycle</span>
+        <span class="lc-pts">100 pts / correct · 35s timer</span>
+        <div class="lc-preview hide" id="preview-intermediate"></div>
+      </button>
+      <button class="level-card" data-level="advanced">
+        <span class="lc-badge" style="background:var(--org);color:#000">ADVANCED</span>
+        <span class="lc-role">Senior Forecaster</span>
+        <span class="lc-desc">AI detection · Radar profiles · Multi-signal analysis</span>
+        <span class="lc-pts">150 pts / correct · 30s timer</span>
+        <div class="lc-preview hide" id="preview-advanced"></div>
+      </button>
+      <button class="level-card" data-level="master">
+        <span class="lc-badge" style="background:var(--pur);color:#fff">MASTER</span>
+        <span class="lc-role">Director</span>
+        <span class="lc-desc">Skill scores · Neural networks · Hydrological thresholds</span>
+        <span class="lc-pts">200 pts / correct · 25s timer</span>
+        <div class="lc-preview hide" id="preview-master"></div>
+      </button>
+    </div>
+
+    <button id="launch-btn" class="launch-btn hide">
+      <span>LAUNCH MISSION</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+
+    <!-- Best scores from localStorage -->
+    <div class="best-scores" id="best-scores"></div>
+
+    <p class="title-note">No API key required · 20 questions per level · All 4 levels available</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 2 — GAME
+═══════════════════════════════════════════════════════ -->
+<div id="game-screen" class="screen hide">
+
+  <!-- TOP HUD -->
+  <header class="hud">
+    <span class="hud-logo">MONSOON WATCH</span>
+    <div class="hud-center">
+      <div class="hud-prog-wrap">
+        <div class="hud-prog-bar" id="prog-bar"></div>
+      </div>
+      <span class="hud-q" id="q-hud">Q 1/20</span>
+    </div>
+    <div class="hud-right">
+      <span class="hud-stat" id="score-hud">0 pts</span>
+      <span class="hud-streak hide" id="streak-hud">🔥 0</span>
+      <span class="hud-stat dim" id="acc-hud">—</span>
+      <span class="hud-badge" id="level-badge"></span>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="game-layout">
+
+    <!-- LEFT: SATELLITE MAP -->
+    <div class="map-col">
+      <div class="map-wrap" id="map-wrap">
+        <canvas id="sat-map"></canvas>
+        <canvas id="sweep-canvas"></canvas>
+
+        <div class="map-label top-left" id="map-label">IR 11μm</div>
+        <div class="map-label top-right">
+          <div class="band-btns">
+            <button class="band-btn active" id="band-ir">IR</button>
+            <button class="band-btn" id="band-wv">WV</button>
+            <button class="band-btn" id="band-btd">BTD</button>
+          </div>
+        </div>
+        <div class="map-label bottom-left" id="region-label"></div>
+        <div class="map-label bottom-right" id="img-credit" style="display:none;font-size:.6rem;opacity:.5;">NASA MODIS · GIBS</div>
+
+        <!-- Band hint badge — shown when a question needs a specific band -->
+        <div class="band-hint" id="band-hint" style="display:none">
+          <span id="band-hint-text">Switch to BTD to analyse this</span>
+        </div>
+
+        <div class="img-loading hide" id="img-loading">
+          <span class="img-loading-dot"></span>
+          <span>Loading real imagery…</span>
+        </div>
+
+        <!-- Timer arc -->
+        <div class="timer-wrap" id="timer-wrap">
+          <svg class="timer-svg" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="3.5"/>
+            <circle id="timer-ring" cx="26" cy="26" r="21" fill="none"
+              stroke="var(--grn)" stroke-width="3.5"
+              stroke-dasharray="132" stroke-dashoffset="0"
+              stroke-linecap="round" transform="rotate(-90 26 26)"/>
+          </svg>
+          <span class="timer-num" id="timer-num">45</span>
+        </div>
+
+        <div class="scan-line" id="scan-line"></div>
+      </div>
+
+      <!-- DATA PANEL -->
+      <div class="data-panel">
+        <div class="data-row">
+          <div class="data-cell" id="cell-tb">
+            <span class="data-key">TB₁₁</span>
+            <span class="data-val" id="val-tb">—</span>
+            <span class="data-thresh" id="thresh-tb"></span>
+          </div>
+          <div class="data-cell" id="cell-btd1">
+            <span class="data-key">BTD₁</span>
+            <span class="data-val" id="val-btd1">—</span>
+            <span class="data-thresh" id="thresh-btd1"></span>
+          </div>
+          <div class="data-cell" id="cell-delta">
+            <span class="data-key">ΔBTD</span>
+            <span class="data-val" id="val-delta">—</span>
+            <span class="data-thresh" id="thresh-delta"></span>
+          </div>
+          <div class="data-cell" id="cell-stormh">
+            <span class="data-key">Storm H</span>
+            <span class="data-val" id="val-stormh">—</span>
+            <span class="data-thresh" id="thresh-stormh"></span>
+          </div>
+        </div>
+        <div class="data-bars">
+          <div class="bar-row">
+            <span class="bar-label">Rain Rate</span>
+            <div class="bar-track"><div class="bar-fill rain-fill" id="rain-bar"></div></div>
+            <span class="bar-val" id="rain-val">—</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Storm Depth</span>
+            <div class="bar-track"><div class="bar-fill depth-fill" id="depth-bar"></div></div>
+            <span class="bar-val" id="depth-val">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: SCENARIO + DECISION -->
+    <div class="right-col" id="right-col">
+
+      <!-- Scenario header -->
+      <div class="sc-header">
+        <div class="sc-meta">
+          <span class="sc-day" id="sc-day"></span>
+          <span class="sc-tag" id="sc-tag"></span>
+          <span class="sc-band-req hide" id="sc-band-req"></span>
+        </div>
+        <h2 class="sc-title" id="sc-title"></h2>
+        <div class="sc-region" id="sc-region"></div>
+      </div>
+
+      <!-- Hint strip -->
+      <div class="hint-strip hide" id="hint-strip">
+        <span class="hint-icon">💡</span>
+        <span id="hint-text"></span>
+      </div>
+
+      <!-- Question — split into situation + decision -->
+      <div class="question-box">
+        <div class="q-situation" id="q-situation"></div>
+        <div class="q-decision" id="q-decision"></div>
+      </div>
+
+      <!-- Choices -->
+      <div class="choices" id="choices"></div>
+
+      <!-- Action row -->
+      <div class="action-row">
+        <button class="btn-ghost" id="hint-btn">
+          💡 Hint <span class="hint-cost" id="hint-cost">(−10 pts)</span>
+        </button>
+        <button class="btn-ghost" id="skip-btn">⇥ Skip</button>
+        <span class="hints-left" id="hints-left">3 hints left</span>
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback hide" id="feedback">
+        <div class="feedback-verdict" id="feedback-verdict"></div>
+        <div class="feedback-streak" id="feedback-streak"></div>
+        <div class="feedback-expl" id="feedback-expl"></div>
+        <button class="btn-next" id="next-btn">Next Question →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM SHEET -->
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="bs-handle"></div>
+    <div class="bs-content" id="bs-content"></div>
+  </div>
+  <div class="bs-backdrop hide" id="bs-backdrop"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 3 — DEBRIEF
+═══════════════════════════════════════════════════════ -->
+<div id="debrief-screen" class="screen hide">
+  <div class="debrief-wrap">
+    <div class="debrief-header">
+      <h2 class="debrief-title" id="debrief-title">Mission Complete</h2>
+      <p class="debrief-sub" id="debrief-sub"></p>
+    </div>
+
+    <div class="score-ring-wrap">
+      <svg class="score-ring-svg" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/>
+        <circle id="score-ring" cx="60" cy="60" r="52" fill="none"
+          stroke="var(--acc)" stroke-width="8"
+          stroke-dasharray="327" stroke-dashoffset="327"
+          stroke-linecap="round" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="score-ring-inner">
+        <span class="score-pct" id="score-pct">0%</span>
+        <span class="score-pts" id="score-pts">0 pts</span>
+      </div>
+    </div>
+
+    <div class="debrief-stats">
+      <div class="stat-box">
+        <span class="stat-n" id="stat-correct">0</span>
+        <span class="stat-l">Correct</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-n" id="stat-wrong">0</span>
+        <span class="stat-l">Wrong</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-n" id="stat-skipped">0</span>
+        <span class="stat-l">Skipped</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-n" id="stat-best-streak">0</span>
+        <span class="stat-l">Best Streak</span>
+      </div>
+    </div>
+
+    <!-- Topic breakdown -->
+    <div class="topic-breakdown" id="topic-breakdown">
+      <h3 class="breakdown-title">Performance by Topic</h3>
+      <div class="topic-grid" id="topic-grid"></div>
+    </div>
+
+    <!-- Wrong answers review -->
+    <div class="review-section" id="review-section">
+      <h3 class="breakdown-title">Review Wrong Answers</h3>
+      <div class="review-list" id="review-list"></div>
+    </div>
+
+    <div class="history-grid" id="history-grid"></div>
+
+    <div class="debrief-actions">
+      <button class="btn-primary" id="play-again">Play Again</button>
+      <button class="btn-ghost" id="change-level">Change Level</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
