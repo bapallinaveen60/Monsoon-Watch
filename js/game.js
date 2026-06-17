@@ -75,6 +75,7 @@ export function initGame() {
   initDailyChallenge();
   initAcademy();
   initHistoricalMissions();
+  initMobileNav();
   
   // Launch Career Simulation
   el('launch-btn')?.addEventListener('click', () => {
@@ -767,4 +768,27 @@ function shuffle(arr) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+}
+
+function initMobileNav() {
+  const btns = document.querySelectorAll('.m-nav-btn');
+  const cards = document.querySelectorAll('.ops-card');
+  
+  // Set default active tab
+  const defaultTab = "map-card";
+  cards.forEach(card => {
+    card.classList.toggle('active-mobile', card.classList.contains(defaultTab));
+  });
+  
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const target = btn.dataset.target;
+      cards.forEach(card => {
+        card.classList.toggle('active-mobile', card.classList.contains(target));
+      });
+    });
+  });
 }
