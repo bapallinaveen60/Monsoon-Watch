@@ -264,6 +264,18 @@ html, body {
   margin-top: 1rem;
 }
 .ops-launch-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
+.ops-launch-btn.disabled-btn {
+  background: var(--s3);
+  color: var(--txt3);
+  border: 1px solid var(--bdr);
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+.ops-launch-btn.disabled-btn:hover {
+  background: var(--s3);
+  box-shadow: none;
+}
 
 .daily-challenge-box {
   background: rgba(255, 215, 0, 0.03);

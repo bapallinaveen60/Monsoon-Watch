@@ -4,7 +4,7 @@
 // (e.g. https://user.github.io/satellite_meteorology_quiz/)
 // ═══════════════════════════════════════════════════════
 
-const APP_VERSION = 'v2.0.3';
+const APP_VERSION = 'v2.0.4';
 const SHELL_CACHE = 'mw-shell-' + APP_VERSION;
 const IMAGE_CACHE = 'mw-images-' + APP_VERSION;
 const FONT_CACHE  = 'mw-fonts-'  + APP_VERSION;

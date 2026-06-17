@@ -241,8 +241,41 @@ function initInteractiveMap() {
       });
     }
   });
-  // Select default
-  selectStation("delhi");
+  // Show general climate overview by default instead of auto-selecting Delhi
+  showGeneralClimate();
+}
+
+function showGeneralClimate() {
+  G.selectedStation = null;
+  updateCareerHUD();
+  
+  const detail = el('station-detail-pane');
+  if (detail) {
+    detail.innerHTML = `
+      <h3>Indian Weather & Climate System</h3>
+      <p><strong>Overview:</strong> Tropical monsoon climate. Dominated by the Southwest Monsoon (June–September) providing 75–90% of annual rainfall, and the Northeast Monsoon (October–December) affecting southern coastal sectors.</p>
+      <div class="sd-grid">
+        <div class="sd-cell">
+          <span class="sd-label">MONSOON REGIME</span>
+          <span class="sd-val">Highly dynamic seasonal cycle critical for agricultural security, monitored via satellite observations (brightness temperatures, water vapor channels, CAPE stability).</span>
+        </div>
+        <div class="sd-cell">
+          <span class="sd-label">WARNING THRESHOLDS</span>
+          <span class="sd-val">Forecasters monitor convective indices, storm height depth, and microwave rain estimates to issue timely severe weather and flood warnings.</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update launch button text
+  const launchBtn = el('launch-btn');
+  if (launchBtn) {
+    launchBtn.innerHTML = `
+      <span>SELECT A STATION ON MAP TO LAUNCH</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    `;
+    launchBtn.classList.add('disabled-btn');
+  }
 }
 
 function selectStation(id) {
@@ -255,6 +288,8 @@ function selectStation(id) {
   const unlocked = isStationUnlocked(id);
   const detail = el('station-detail-pane');
   if (!detail) return;
+  
+  const launchBtn = el('launch-btn');
   
   if (unlocked) {
     detail.innerHTML = `
@@ -271,11 +306,25 @@ function selectStation(id) {
         </div>
       </div>
     `;
+    if (launchBtn) {
+      launchBtn.innerHTML = `
+        <span>LAUNCH SYSTEM SIMULATION</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      `;
+      launchBtn.classList.remove('disabled-btn');
+    }
   } else {
     detail.innerHTML = `
       <h3 style="color:var(--red)">🔒 STATION SECTOR LOCKED</h3>
       <p>This regional radar network is currently out of range. Reach <strong>${met.unlockedAt} XP</strong> to decrypt live telemetry feeds.</p>
     `;
+    if (launchBtn) {
+      launchBtn.innerHTML = `
+        <span>STATION LOCKED (XP REQUIRED)</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      `;
+      launchBtn.classList.add('disabled-btn');
+    }
   }
 }
 
