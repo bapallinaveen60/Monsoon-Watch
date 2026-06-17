@@ -97,6 +97,7 @@ export function initGame() {
   
   el('abort-btn')?.addEventListener('click', abortShift);
   el('submit-forecast-btn')?.addEventListener('click', submitForecast);
+  el('skip-question-btn')?.addEventListener('click', skipQuestion);
   
   el('play-again')?.addEventListener('click', () => {
     hide('debrief-screen');
@@ -484,8 +485,14 @@ function loadSimulationStep() {
   G.awaitingNext = false;
   const submitBtn = el('submit-forecast-btn');
   if (submitBtn) {
-    submitBtn.textContent = "SUBMIT FORECAST FOR EVALUATION";
+    submitBtn.textContent = "SUBMIT FORECAST";
     submitBtn.disabled = false;
+  }
+  
+  // Reset skip button
+  const skipBtn = el('skip-question-btn');
+  if (skipBtn) {
+    skipBtn.disabled = false;
   }
   
   // Hide feedback container
@@ -601,13 +608,19 @@ function submitForecast() {
     btn.disabled = true;
   });
 
+  // Disable skip button during feedback phase
+  const skipBtn = el('skip-question-btn');
+  if (skipBtn) {
+    skipBtn.disabled = true;
+  }
+
   // Set dual-state trigger to proceed
   G.awaitingNext = true;
   
   const submitBtn = el('submit-forecast-btn');
   if (submitBtn) {
     const isLastQuestion = G.qIdx === G.activeScenarios.length - 1;
-    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT STEP";
     submitBtn.disabled = false;
   }
 }
@@ -750,12 +763,18 @@ function timeOut() {
     btn.disabled = true;
   });
 
+  // Disable skip button
+  const skipBtn = el('skip-question-btn');
+  if (skipBtn) {
+    skipBtn.disabled = true;
+  }
+
   G.awaitingNext = true;
   
   const submitBtn = el('submit-forecast-btn');
   if (submitBtn) {
     const isLastQuestion = G.qIdx === G.activeScenarios.length - 1;
-    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT STEP";
     submitBtn.disabled = false;
   }
 }
@@ -831,4 +850,25 @@ function initMobileNav() {
       });
     });
   });
+}
+
+function skipQuestion() {
+  if (G.awaitingNext) return;
+  stopTimer();
+  
+  const sc = G.currentScenario;
+  
+  G.history.push({
+    title: sc.title,
+    score: 0,
+    outcomeClass: "wrong",
+    feedbackHtml: `<p style="color:var(--red)"><strong>SKIPPED:</strong> Forecaster bypassed this simulation step.</p>
+                   <p style="font-size:0.8rem; margin-top:8px"><strong>Correct Analysis:</strong> ${sc.explanation}</p>`
+  });
+  
+  G.wrong++;
+  logOp(`[OPS] Skipped forecast at ${sc.title}`);
+  
+  G.qIdx++;
+  loadSimulationStep();
 }
