@@ -935,6 +935,11 @@ html, body {
 
   .ops-sim-layout {
     grid-template-columns: 1fr !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+  }
+
+  .sim-right-panel {
     overflow-y: visible !important;
     height: auto !important;
   }
