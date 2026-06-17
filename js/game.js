@@ -1,688 +1,770 @@
 // ═══════════════════════════════════════════════════════
-// MONSOON WATCH — Game Engine v2
-// Features: timer, streak/multiplier, colour-coded readings,
-// split question, hint cost, band-required, localStorage,
-// topic breakdown, wrong-answer review, mobile bottom sheet,
-// title screen preview
+// MONSOON WATCH V2 — Professional Game Engine
 // ═══════════════════════════════════════════════════════
-import { DB } from './scenarios.js';
+import { DB, STATIONS, HISTORICAL_MISSIONS } from './scenarios.js';
+import { getCopilotBriefing, evaluateForecast, generateDailyChallenge } from './copilot.js';
+import { LESSONS } from './edu.js';
 import { drawMap, startSweep, stopSweep } from './map.js';
 import { fetchSatImage } from './imagery.js';
 
 // ── Constants ──────────────────────────────────────────
-const TIMER_SECS  = { beginner:45, intermediate:35, advanced:30, master:25 };
-const PTS         = { beginner:50, intermediate:100, advanced:150, master:200 };
-const MAX_HINTS   = 3;
-const HINT_COST   = 10;
-const STREAK_MULT = { 3:1.5, 5:2.0 };   // streak → multiplier
-
-// Bands that certain mapTypes should highlight
-const BAND_REQUIRED = {
-  btd_challenge: 'BTD',
-  shallow_warm:  'BTD',
-  conv_vs_strat: 'BTD',
-};
-
-// TB₁₁ thresholds for colour coding
-const TB_THRESHOLDS = [
-  { max:210, cls:'alert-red',  label:'Deep convection' },
-  { max:235, cls:'alert-org',  label:'Active convection' },
-  { max:260, cls:'alert-gold', label:'Moderate cloud' },
-  { max:999, cls:'alert-grn',  label:'Shallow/warm cloud' },
+const TIMER_SECS  = { beginner: 45, intermediate: 35, advanced: 30, master: 25 };
+const RANKS = [
+  { xp: 0, title: "Observer" },
+  { xp: 100, title: "Junior Analyst" },
+  { xp: 300, title: "Analyst" },
+  { xp: 700, title: "Senior Analyst" },
+  { xp: 1200, title: "Forecaster" },
+  { xp: 1800, title: "Senior Forecaster" },
+  { xp: 2500, title: "Regional Director" },
+  { xp: 3500, title: "National Director" }
 ];
 
 // ── State ──────────────────────────────────────────────
 const G = {
-  level:null, score:0, qIdx:0, correct:0, wrong:0, skipped:0,
-  answered:0, history:[], scenarios:[], current:null, band:'IR',
-  totalQ:20, streak:0, bestStreak:0, hintsLeft:MAX_HINTS,
-  timerInterval:null, timerSecs:0, timerMax:45,
-  topicStats:{},   // { tagName: { correct, total } }
+  // Career profile
+  xp: 0,
+  completedLessons: [],
+  selectedStation: "delhi",
+  selectedLevel: "beginner",
+  
+  // Shift state
+  activeShiftType: "career", // "career" | "historical" | "daily"
+  activeScenarios: [],
+  currentScenario: null,
+  qIdx: 0,
+  score: 0, // XP earned in this shift
+  correct: 0, // Perfect forecasts
+  wrong: 0, // Wrong forecasts (score < 50)
+  partial: 0, // Partials (50 <= score < 100)
+  history: [], // Shift history log
+  
+  // Active forecast selections
+  forecastAlert: "green",
+  forecastRain: "moderate",
+  forecastClass: "stratiform",
+  forecastHazard: "moderate",
+  
+  // System variables
+  band: "IR",
+  timerMax: 45,
+  timerSecs: 45,
+  timerInterval: null,
+  
+  // Historical context
+  activeHistoricalMission: null,
+  activeHistoricalStepIdx: 0
 };
 
 // ── DOM helpers ────────────────────────────────────────
 const el   = id => document.getElementById(id);
-const txt  = (id,v) => { const e=el(id); if(e) e.textContent=v; };
-const css  = (id,p,v) => { const e=el(id); if(e) e.style[p]=v; };
+const txt  = (id, v) => { const e = el(id); if (e) e.textContent = v; };
+const html = (id, v) => { const e = el(id); if (e) e.innerHTML = v; };
+const css  = (id, p, v) => { const e = el(id); if (e) e.style[p] = v; };
 const show = id => el(id)?.classList.remove('hide');
 const hide = id => el(id)?.classList.add('hide');
-const cls  = (id,c,on) => el(id)?.classList.toggle(c,on);
+const cls  = (id, c, on) => el(id)?.classList.toggle(c, on);
 
 // ── Init ───────────────────────────────────────────────
 export function initGame() {
-  // Level card selection + preview
-  document.querySelectorAll('.level-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      show('launch-btn');
-    });
-    // Populate preview with first scenario of that level
-    const lvl = card.dataset.level;
-    const first = DB[lvl]?.[0];
-    if (first) {
-      const prev = el('preview-' + lvl);
-      if (prev) {
-        prev.innerHTML = `<div class="lc-preview-q">"${first.question.slice(0,90)}…"</div>
-          <span class="lc-preview-tag">${first.choices[0]?.tag || ''}</span>`;
-      }
+  loadProfile();
+  
+  // --- HQ Dashboard Setups ---
+  initInteractiveMap();
+  initCareerLevels();
+  initDailyChallenge();
+  initAcademy();
+  initHistoricalMissions();
+  
+  // Launch Career Simulation
+  el('launch-btn')?.addEventListener('click', () => {
+    const unlocked = isStationUnlocked(G.selectedStation);
+    if (!unlocked) {
+      alert("This meteorological station is currently locked. Gain more XP to unlock subsequent regional sectors.");
+      return;
+    }
+    startShift("career");
+  });
+
+  // Simulator Screen controls
+  el('band-ir')?.addEventListener('click', () => changeBand('IR'));
+  el('band-wv')?.addEventListener('click', () => changeBand('WV'));
+  el('band-btd')?.addEventListener('click', () => changeBand('BTD'));
+  
+  el('abort-btn')?.addEventListener('click', abortShift);
+  el('submit-forecast-btn')?.addEventListener('click', submitForecast);
+  el('hint-btn')?.addEventListener('click', requestCopilotBriefing);
+  
+  el('play-again')?.addEventListener('click', () => {
+    hide('debrief-screen');
+    if (G.activeShiftType === "career") {
+      startShift("career");
+    } else if (G.activeShiftType === "historical") {
+      startHistoricalMission(G.activeHistoricalMission);
+    } else {
+      startShift("daily");
     }
   });
-
-  el('launch-btn')?.addEventListener('click', () => {
-    const sel = document.querySelector('.level-card.selected');
-    if (sel) startLevel(sel.dataset.level);
+  
+  el('change-level')?.addEventListener('click', () => {
+    hide('debrief-screen');
+    show('title-screen');
+    updateCareerHUD();
   });
 
-  // Band buttons
-  el('band-ir')?.addEventListener('click',  () => changeBand('IR'));
-  el('band-wv')?.addEventListener('click',  () => changeBand('WV'));
-  el('band-btd')?.addEventListener('click', () => changeBand('BTD'));
+  // Forecast input button selectors
+  document.querySelectorAll('.alert-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.alert-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      G.forecastAlert = btn.dataset.alert;
+      logOp(`[WARN] Alert level adjusted to ${G.forecastAlert.toUpperCase()}`);
+    });
+  });
 
-  el('hint-btn')?.addEventListener('click', useHint);
-  el('skip-btn')?.addEventListener('click', skipQuestion);
-  el('next-btn')?.addEventListener('click', nextQuestion);
+  // Visual grid toggles
+  el('toggle-grid')?.addEventListener('change', (e) => {
+    logOp(`[GRID] Visual grid display: ${e.target.checked ? 'ENABLED' : 'DISABLED'}`);
+  });
 
-  el('play-again')?.addEventListener('click',   () => startLevel(G.level));
-  el('change-level')?.addEventListener('click', () => { hide('debrief-screen'); show('title-screen'); });
+  // Setup tab toggling
+  el('tab-btn-academy')?.addEventListener('click', () => {
+    el('tab-btn-academy').classList.add('active');
+    el('tab-btn-history').classList.remove('active');
+    show('tab-academy');
+    hide('tab-history');
+  });
+
+  el('tab-btn-history')?.addEventListener('click', () => {
+    el('tab-btn-history').classList.add('active');
+    el('tab-btn-academy').classList.remove('active');
+    show('tab-history');
+    hide('tab-academy');
+  });
+
+  // Close lesson modal
+  el('close-lesson-btn')?.addEventListener('click', () => {
+    hide('lesson-modal');
+  });
 
   // Map resize
   new ResizeObserver(() => {
-    if (G.current) drawMap(el('sat-map'), G.current, G.band);
+    if (G.currentScenario) drawMap(el('sat-map'), G.currentScenario, G.band);
   }).observe(el('map-wrap') || document.body);
-
-  // Mobile bottom sheet drag-to-dismiss
-  _initBottomSheet();
-
-  // Show best scores on title
-  _renderBestScores();
 }
 
-// ── Level start ────────────────────────────────────────
-function startLevel(level) {
-  G.level=level; G.score=0; G.qIdx=0; G.correct=0; G.wrong=0;
-  G.skipped=0; G.answered=0; G.history=[]; G.streak=0;
-  G.bestStreak=0; G.hintsLeft=MAX_HINTS; G.topicStats={};
-  G.band='IR'; G.timerMax=TIMER_SECS[level]||45;
-
-  G.scenarios = [...(DB[level]||[])];
-  shuffle(G.scenarios);
-
-  hide('title-screen'); hide('debrief-screen'); show('game-screen');
-
-  const badges = {beginner:'#34d399',intermediate:'#38bdf8',advanced:'#fb923c',master:'#a78bfa'};
-  const badge = el('level-badge');
-  if (badge) {
-    badge.textContent = level.charAt(0).toUpperCase()+level.slice(1);
-    badge.style.background = badges[level]||'var(--s3)';
-    badge.style.color = level==='master'?'#fff':'#000';
+// ── LocalStorage Profile ───────────────────────────────
+function loadProfile() {
+  try {
+    const p = JSON.parse(localStorage.getItem('mw_v2_profile') || '{}');
+    G.xp = p.xp || 0;
+    G.completedLessons = p.completedLessons || [];
+  } catch(e) {
+    G.xp = 0;
+    G.completedLessons = [];
   }
+}
 
+function saveProfile() {
+  try {
+    localStorage.setItem('mw_v2_profile', JSON.stringify({
+      xp: G.xp,
+      completedLessons: G.completedLessons
+    }));
+  } catch(e) {}
+}
+
+function addXP(amount) {
+  G.xp += amount;
+  saveProfile();
+}
+
+function getRank(xp) {
+  let title = RANKS[0].title;
+  for (let r of RANKS) {
+    if (xp >= r.xp) title = r.title;
+  }
+  return title;
+}
+
+function getNextRankInfo(xp) {
+  const current = getRank(xp);
+  const currentIdx = RANKS.findIndex(r => r.title === current);
+  if (currentIdx === RANKS.length - 1) return "MAX RANK ACHIEVED";
+  const next = RANKS[currentIdx + 1];
+  return `Next rank (${next.title}) unlocks at ${next.xp} XP`;
+}
+
+function isStationUnlocked(stationId) {
+  const met = STATIONS[stationId];
+  return met ? G.xp >= met.unlockedAt : false;
+}
+
+function updateCareerHUD() {
+  const rank = getRank(G.xp);
+  txt('career-rank', rank);
+  txt('career-xp', `${G.xp} XP`);
+  txt('career-next-rank', getNextRankInfo(G.xp));
+  
+  // Progress bar calculation
+  const currentIdx = RANKS.findIndex(r => r.title === rank);
+  const minXp = RANKS[currentIdx].xp;
+  if (currentIdx === RANKS.length - 1) {
+    css('career-xp-bar', 'width', '100%');
+  } else {
+    const maxXp = RANKS[currentIdx + 1].xp;
+    const pct = ((G.xp - minXp) / (maxXp - minXp)) * 100;
+    css('career-xp-bar', 'width', `${Math.max(0, Math.min(100, pct))}%`);
+  }
+  
+  // Update map SVG highlights
+  Object.keys(STATIONS).forEach(id => {
+    const unlocked = isStationUnlocked(id);
+    const node = el('node-' + id);
+    if (node) {
+      node.className.baseVal = `map-node ${unlocked ? 'unlocked' : 'locked'} ${G.selectedStation === id ? 'selected' : ''}`;
+    }
+  });
+}
+
+// ── HQ Map & Stations ──────────────────────────────────
+function initInteractiveMap() {
+  Object.keys(STATIONS).forEach(id => {
+    const node = el('node-' + id);
+    if (node) {
+      node.addEventListener('click', () => {
+        selectStation(id);
+      });
+    }
+  });
+  // Select default
+  selectStation("delhi");
+}
+
+function selectStation(id) {
+  G.selectedStation = id;
+  updateCareerHUD();
+  
+  const met = STATIONS[id];
+  if (!met) return;
+  
+  const unlocked = isStationUnlocked(id);
+  const detail = el('station-detail-pane');
+  if (!detail) return;
+  
+  if (unlocked) {
+    detail.innerHTML = `
+      <h3>${met.name}</h3>
+      <p><strong>Climate:</strong> ${met.climate}</p>
+      <div class="sd-grid">
+        <div class="sd-cell">
+          <span class="sd-label">MONSOON REGIME</span>
+          <span class="sd-val">${met.monsoon.slice(0, 45)}...</span>
+        </div>
+        <div class="sd-cell">
+          <span class="sd-label">HISTORICAL INCIDENT</span>
+          <span class="sd-val">${met.history.slice(0, 45)}...</span>
+        </div>
+      </div>
+    `;
+  } else {
+    detail.innerHTML = `
+      <h3 style="color:var(--red)">🔒 STATION SECTOR LOCKED</h3>
+      <p>This regional radar network is currently out of range. Reach <strong>${met.unlockedAt} XP</strong> to decrypt live telemetry feeds.</p>
+    `;
+  }
+}
+
+function initCareerLevels() {
+  document.querySelectorAll('.level-card-v2').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.level-card-v2').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      G.selectedLevel = card.dataset.level;
+    });
+  });
+}
+
+// ── Daily forecast challenges ──────────────────────────
+function initDailyChallenge() {
+  const c = generateDailyChallenge();
+  txt('dc-desc', `${c.title}: ${c.desc}`);
+  el('launch-dc-btn')?.addEventListener('click', () => {
+    startShift("daily");
+  });
+}
+
+// ── Academy Lessons ────────────────────────────────────
+function initAcademy() {
+  const list = el('academy-list');
+  if (!list) return;
+  list.innerHTML = '';
+  
+  LESSONS.forEach(l => {
+    const card = document.createElement('div');
+    const comp = G.completedLessons.includes(l.id);
+    card.className = `lesson-card-item ${comp ? 'completed' : ''}`;
+    card.innerHTML = `
+      <h4>${l.title} ${comp ? '✅' : ''}</h4>
+      <p>${l.desc}</p>
+    `;
+    card.addEventListener('click', () => openLesson(l));
+    list.appendChild(card);
+  });
+}
+
+function openLesson(lesson) {
+  show('lesson-modal');
+  html('lesson-body', `
+    <h2>${lesson.title}</h2>
+    <div>${lesson.content}</div>
+  `);
+  
+  // Render Lesson Quiz
+  const qSection = el('lesson-quiz-section');
+  if (!qSection) return;
+  qSection.innerHTML = `<h4>💡 QUICK EXAM / CERTIFICATION QUIZ</h4>`;
+  
+  lesson.quiz.forEach((qz, idx) => {
+    const block = document.createElement('div');
+    block.style.marginBottom = '1rem';
+    block.innerHTML = `<p class="quiz-q">${idx + 1}. ${qz.q}</p>`;
+    
+    const choicesDiv = document.createElement('div');
+    choicesDiv.className = 'quiz-choices';
+    
+    qz.choices.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-choice-btn';
+      btn.textContent = ch;
+      btn.addEventListener('click', () => {
+        if (ch === qz.a) {
+          btn.classList.add('correct');
+          btn.disabled = true;
+          // Check if quiz is passed
+          handleLessonCompleted(lesson.id);
+        } else {
+          btn.classList.add('wrong');
+          btn.disabled = true;
+        }
+      });
+      choicesDiv.appendChild(btn);
+    });
+    
+    block.appendChild(choicesDiv);
+    qSection.appendChild(block);
+  });
+}
+
+function handleLessonCompleted(lessonId) {
+  if (G.completedLessons.includes(lessonId)) return;
+  G.completedLessons.push(lessonId);
+  saveProfile();
+  addXP(30); // Reward 30 XP for passing lesson
+  alert("Certification Quiz Passed! +30 XP awarded. Dynamic lessons updated.");
+  initAcademy();
+}
+
+// ── Historical Missions ────────────────────────────────
+function initHistoricalMissions() {
+  const list = el('history-list');
+  if (!list) return;
+  list.innerHTML = '';
+  
+  HISTORICAL_MISSIONS.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'history-card-item';
+    card.innerHTML = `
+      <h4>${m.name}</h4>
+      <p>${m.desc} (Difficulty: <em style="color:var(--gold)">${m.difficulty}</em>)</p>
+    `;
+    card.addEventListener('click', () => {
+      startHistoricalMission(m);
+    });
+    list.appendChild(card);
+  });
+}
+
+function startHistoricalMission(mission) {
+  G.activeShiftType = "historical";
+  G.activeHistoricalMission = mission;
+  G.activeHistoricalStepIdx = 0;
+  G.activeScenarios = [...mission.steps];
+  
+  startShift("historical");
+}
+
+// ── Start Forecasting Shift ────────────────────────────
+function startShift(type) {
+  G.activeShiftType = type;
+  G.score = 0;
+  G.qIdx = 0;
+  G.correct = 0;
+  G.wrong = 0;
+  G.partial = 0;
+  G.history = [];
+  G.band = "IR";
+  
+  if (type === "career") {
+    // Populate scenarios based on station and level
+    const pool = DB[G.selectedLevel] || [];
+    // Filter by station if possible, else fallback
+    let matched = pool.filter(sc => sc.station === G.selectedStation);
+    if (matched.length === 0) matched = pool; // Fallback
+    
+    G.activeScenarios = [...matched];
+    shuffle(G.activeScenarios);
+    
+    // Take up to 10 scenarios for this shift
+    G.activeScenarios = G.activeScenarios.slice(0, 10);
+  } else if (type === "daily") {
+    // Select 3 random high-convective scenarios from Advanced/Master pools
+    const all = [...DB.advanced, ...DB.master];
+    shuffle(all);
+    G.activeScenarios = all.slice(0, 3);
+  }
+  
+  if (G.activeScenarios.length === 0) {
+    alert("Meteorological anomaly: No active telemetry grids registered for this configuration.");
+    return;
+  }
+  
+  G.timerMax = TIMER_SECS[G.selectedLevel] || 45;
+  
+  hide('title-screen');
+  hide('debrief-screen');
+  show('game-screen');
+  
+  // Dynamic header setup
+  const st = STATIONS[G.selectedStation] || { name: "CENTRAL OPERATIONS" };
+  txt('hud-station-name', st.name.toUpperCase());
+  txt('hud-rank-label', `${getRank(G.xp).toUpperCase()} SHIFT`);
+  
   startSweep(el('sweep-canvas'));
-  loadQuestion();
+  loadSimulationStep();
 }
 
-// ── Load question ──────────────────────────────────────
-function loadQuestion() {
-  if (G.qIdx >= G.totalQ) { showDebrief(); return; }
-  stopTimer();
-
-  G.current = G.scenarios[G.qIdx % G.scenarios.length];
-  hide('feedback'); hide('hint-strip');
-  show('hint-btn'); show('skip-btn');
-
-  // Reset hint button state
-  const hb = el('hint-btn');
-  if (hb) {
-    hb.disabled = G.hintsLeft <= 0;
-    hb.title = G.hintsLeft <= 0 ? 'No hints remaining' : '';
+function loadSimulationStep() {
+  if (G.qIdx >= G.activeScenarios.length) {
+    endShift();
+    return;
   }
-  txt('hints-left', `${G.hintsLeft} hint${G.hintsLeft!==1?'s':''} left`);
-
-  renderScenario();
-  updateHUD();
+  stopTimer();
+  
+  // Set current scenario
+  G.currentScenario = G.activeScenarios[G.qIdx];
+  G.forecastAlert = "green";
+  G.forecastRain = "moderate";
+  G.forecastClass = "stratiform";
+  G.forecastHazard = "moderate";
+  
+  // Reset input selects
+  el('forecast-rain').value = "moderate";
+  el('forecast-class').value = "stratiform";
+  el('forecast-hazard').value = "moderate";
+  document.querySelectorAll('.alert-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.alert === "green");
+  });
+  
+  // Re-enable elements
+  el('submit-forecast-btn').disabled = false;
+  el('hint-btn').disabled = false;
+  html('copilot-text', "Satellite telemetry received. Issue forecast advisories.");
+  
+  renderSimulationTelemetry();
   startTimer();
 }
 
-// ── Render scenario ────────────────────────────────────
-function renderScenario() {
-  const sc = G.current;
-  const d  = sc.data;
-
-  txt('sc-day',    sc.day);
-  txt('sc-title',  sc.title);
+function renderSimulationTelemetry() {
+  const sc = G.currentScenario;
+  const d = sc.data;
+  
+  txt('hud-callsign', `ST-ID: ${sc.id.toUpperCase()}`);
+  txt('q-hud', `STEP ${G.qIdx + 1} / ${G.activeScenarios.length}`);
+  txt('score-hud', `${G.score} XP`);
+  
+  txt('sc-day', sc.day);
+  txt('sc-title', sc.title);
   txt('sc-region', sc.region);
-  txt('sc-tag',    sc.choices?.[0]?.tag || '');
-  txt('region-label', sc.region.split('(')[0].trim());
-
-  // Band required badge
-  const reqBand = BAND_REQUIRED[sc.mapType];
-  const bandReqEl = el('sc-band-req');
-  if (reqBand && bandReqEl) {
-    bandReqEl.textContent = `🔍 Switch to ${reqBand}`;
-    bandReqEl.classList.remove('hide');
-  } else {
-    bandReqEl?.classList.add('hide');
-  }
-
-  // Highlight required band button
-  ['ir','wv','btd'].forEach(b => {
-    cls('band-'+b, 'required', reqBand && b.toUpperCase()===reqBand && G.band!==reqBand);
-  });
-
-  // Band hint overlay
-  const bh = el('band-hint');
-  if (bh) {
-    if (reqBand && G.band !== reqBand) {
-      bh.style.display = 'block';
-      txt('band-hint-text', `Switch to ${reqBand} band to analyse this scenario`);
-    } else {
-      bh.style.display = 'none';
-    }
-  }
-
-  // Colour-coded satellite readings
-  _renderReadings(d);
-
-  // Split question into situation + decision
-  _splitQuestion(sc.question);
-
-  renderChoices(sc);
-
-  // Map + real imagery
+  txt('q-situation', sc.question);
+  
+  // Colour-coded readings in Bottom Telemetry Bar
+  _renderTelemetryCell('cell-tb', 'val-tb', 'thresh-tb', `${d.tb11} K`, d.tb11 <= 210 ? 'Deep convection' : d.tb11 <= 235 ? 'Active convection' : 'Shallow warm cloud', d.tb11 <= 210 ? 'alert-red' : d.tb11 <= 235 ? 'alert-org' : 'alert-grn');
+  _renderTelemetryCell('cell-btd1', 'val-btd1', 'thresh-btd1', `${d.btd1} K`, d.btd1 >= 0 ? 'Ice dominant' : d.btd1 <= -20 ? 'Strong liquid' : 'Liquid phase', d.btd1 >= 0 ? 'alert-red' : d.btd1 <= -20 ? 'alert-grn' : 'alert-gold');
+  _renderTelemetryCell('cell-delta', 'val-delta', 'thresh-delta', `${d.deltaBtd} K`, d.deltaBtd >= 2 ? 'Deep ice storm' : d.deltaBtd >= 0 ? 'Mixed phase' : 'Shallow/liquid', d.deltaBtd >= 2 ? 'alert-red' : d.deltaBtd >= 0 ? 'alert-org' : 'alert-grn');
+  
+  // Extra indicators: CAPE and TCWV
+  _renderTelemetryCell('cell-cape', 'val-cape', 'thresh-cape', `${d.cape} J/kg`, d.cape >= 2500 ? 'Extreme instability' : d.cape >= 1200 ? 'Moderate' : 'Stable', d.cape >= 2500 ? 'alert-red' : d.cape >= 1200 ? 'alert-org' : 'alert-grn');
+  _renderTelemetryCell('cell-tcwv', 'val-tcwv', 'thresh-tcwv', `${d.tcwv} mm`, d.tcwv >= 60 ? 'Fully saturated' : d.tcwv >= 40 ? 'Moist' : 'Dry', d.tcwv >= 60 ? 'alert-red' : d.tcwv >= 40 ? 'alert-org' : 'alert-grn');
+  _renderTelemetryCell('cell-stormh', 'val-stormh', 'thresh-stormh', `${d.stormHeight} km`, d.stormHeight >= 12 ? 'Extreme depth' : d.stormHeight >= 8 ? 'Deep' : 'Shallow', d.stormHeight >= 12 ? 'alert-red' : d.stormHeight >= 8 ? 'alert-org' : 'alert-grn');
+  
+  // Render Map
   drawMap(el('sat-map'), sc, G.band);
   show('img-loading');
-  css('img-credit','display','none');
   fetchSatImage(sc, G.band)
-    .then(()=>{ hide('img-loading'); css('img-credit','display','block'); })
-    .catch(()=> hide('img-loading'));
-
-  // Band buttons state
-  ['ir','wv','btd'].forEach(b => {
-    cls('band-'+b, 'active', b.toUpperCase()===G.band);
-  });
-  txt('map-label', _bandLabel(G.band));
+    .then(() => hide('img-loading'))
+    .catch(() => hide('img-loading'));
+    
+  logOp(`[OPS] Loaded telemetry for ${sc.title}`);
 }
 
-// ── Colour-coded readings ──────────────────────────────
-function _renderReadings(d) {
-  // TB₁₁ — colour by threshold
-  const tbThresh = TB_THRESHOLDS.find(t => d.tb11 <= t.max) || TB_THRESHOLDS[3];
-  txt('val-tb', d.tb11+' K');
-  txt('thresh-tb', tbThresh.label);
-  _setAlertClass('cell-tb', tbThresh.cls);
-
-  // BTD₁ — negative = liquid, positive = ice
-  txt('val-btd1', d.btd1+' K');
-  if (d.btd1 < -20) {
-    txt('thresh-btd1','Strong liquid phase'); _setAlertClass('cell-btd1','alert-grn');
-  } else if (d.btd1 < 0) {
-    txt('thresh-btd1','Liquid phase');        _setAlertClass('cell-btd1','alert-gold');
-  } else {
-    txt('thresh-btd1','Ice phase dominant');  _setAlertClass('cell-btd1','alert-red');
-  }
-
-  // ΔBTD — positive = ice/deep, negative = liquid/shallow
-  txt('val-delta', d.deltaBtd+' K');
-  if (d.deltaBtd > 2) {
-    txt('thresh-delta','Deep ice storm');     _setAlertClass('cell-delta','alert-red');
-  } else if (d.deltaBtd > 0) {
-    txt('thresh-delta','Mixed phase');        _setAlertClass('cell-delta','alert-org');
-  } else {
-    txt('thresh-delta','Shallow/liquid');     _setAlertClass('cell-delta','alert-grn');
-  }
-
-  // Storm height
-  txt('val-stormh', d.stormHeight+' km');
-  if (d.stormHeight >= 12) {
-    txt('thresh-stormh','Extreme depth');     _setAlertClass('cell-stormh','alert-red');
-  } else if (d.stormHeight >= 8) {
-    txt('thresh-stormh','Deep convection');   _setAlertClass('cell-stormh','alert-org');
-  } else if (d.stormHeight >= 5) {
-    txt('thresh-stormh','Moderate depth');    _setAlertClass('cell-stormh','alert-gold');
-  } else {
-    txt('thresh-stormh','Shallow cloud');     _setAlertClass('cell-stormh','alert-grn');
-  }
-
-  // Bars
-  const rainPct  = Math.min(d.rainRate/60*100,100);
-  const depthPct = Math.min(d.stormHeight/16*100,100);
-  css('rain-bar','width',rainPct+'%');
-  css('depth-bar','width',depthPct+'%');
-  txt('rain-val',  d.rainRate+' mm/h');
-  txt('depth-val', d.stormHeight+' km');
-}
-
-function _setAlertClass(cellId, cls) {
+function _renderTelemetryCell(cellId, valId, threshId, val, label, alertClass) {
+  txt(valId, val);
+  txt(threshId, label);
   const cell = el(cellId);
-  if (!cell) return;
-  cell.className = 'data-cell ' + cls;
-}
-
-// ── Split question into situation + decision ───────────
-function _splitQuestion(question) {
-  // Split on the last sentence that ends with '?' — that's the decision prompt
-  // Everything before it is the situation context
-  const sentences = question.match(/[^.!?]+[.!?]+/g) || [question];
-  // Find last sentence ending with '?' — that's the decision prompt
-  let lastQ = -1;
-  for (let i = sentences.length - 1; i >= 0; i--) {
-    if (sentences[i].trim().endsWith('?')) { lastQ = i; break; }
+  if (cell) {
+    cell.className = `telemetry-cell ${alertClass}`;
   }
-
-  let situation, decision;
-  if (lastQ > 0) {
-    situation = sentences.slice(0, lastQ).join(' ').trim();
-    decision  = sentences.slice(lastQ).join(' ').trim();
-  } else {
-    situation = '';
-    decision  = question;
-  }
-
-  txt('q-situation', situation);
-  txt('q-decision',  decision);
-  css('q-situation', 'display', situation ? 'block' : 'none');
 }
 
-// ── Render choices ─────────────────────────────────────
-function renderChoices(sc) {
-  const container = el('choices');
-  if (!container) return;
-  container.innerHTML = '';
-  const shuffled = [...sc.choices];
-  shuffle(shuffled);
-  shuffled.forEach(ch => {
-    const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.dataset.id = ch.id;
-    btn.innerHTML = `
-      <span class="choice-tag">${ch.tag||''}</span>
-      <span>${ch.text}</span>
-      <span class="choice-risk" style="color:${ch.color||'var(--txt2)'}">${ch.risk||''}</span>`;
-    btn.addEventListener('click', () => handleChoice(ch.id));
-    container.appendChild(btn);
-  });
-}
-
-// ── Handle answer ──────────────────────────────────────
-function handleChoice(choiceId) {
+// ── Submit Forecast Action ─────────────────────────────
+function submitForecast() {
   stopTimer();
-  const sc = G.current;
-  const isCorrect = choiceId === sc.correctAnswer;
-
-  // Streak + multiplier
-  if (isCorrect) {
-    G.streak++;
-    if (G.streak > G.bestStreak) G.bestStreak = G.streak;
+  el('submit-forecast-btn').disabled = true;
+  el('hint-btn').disabled = true;
+  
+  const sc = G.currentScenario;
+  const userForecast = {
+    rain: el('forecast-rain').value,
+    alert: G.forecastAlert,
+    systemClass: el('forecast-class').value,
+    hazard: G.forecastHazard
+  };
+  
+  const result = evaluateForecast(userForecast, sc);
+  
+  // Update state statistics
+  G.score += result.score;
+  addXP(result.score);
+  
+  let outcomeClass = "wrong";
+  if (result.score === 100) {
+    G.correct++;
+    outcomeClass = "correct";
+    logOp(`[ACC] PERFECT FORECAST (+100 XP) at ${sc.title}`, "correct");
+  } else if (result.score >= 50) {
+    G.partial++;
+    outcomeClass = "partial";
+    logOp(`[ACC] PARTIAL FORECAST (+${result.score} XP) at ${sc.title}`, "alert");
   } else {
-    G.streak = 0;
+    G.wrong++;
+    logOp(`[ACC] INACCURATE FORECAST WARNING (+${result.score} XP) at ${sc.title}`);
   }
-
-  const mult = Object.entries(STREAK_MULT)
-    .filter(([k]) => G.streak >= +k)
-    .reduce((_, [,v]) => v, 1.0);
-
-  const basePts = PTS[G.level] ?? 50;
-  const pts = isCorrect ? Math.round(basePts * mult) : 0;
-
-  G.score    += pts;
-  G.answered++;
-  if (isCorrect) G.correct++; else G.wrong++;
-
-  // Track topic stats
-  const tag = sc.choices.find(c=>c.id===sc.correctAnswer)?.tag || 'General';
-  if (!G.topicStats[tag]) G.topicStats[tag] = {correct:0,total:0};
-  G.topicStats[tag].total++;
-  if (isCorrect) G.topicStats[tag].correct++;
-
+  
+  // Save log history
   G.history.push({
-    title:sc.title, correct:isCorrect, pts, skipped:false,
-    tag, correctAnswer:sc.correctAnswer,
-    correctText: sc.choices.find(c=>c.id===sc.correctAnswer)?.text || '',
-    explanation: sc.explanation,
+    title: sc.title,
+    score: result.score,
+    outcomeClass,
+    feedbackHtml: result.feedbackHtml
   });
-
-  // Highlight choices
-  document.querySelectorAll('.choice-btn').forEach(btn => {
-    btn.disabled = true;
-    const id = btn.dataset.id;
-    if (id===sc.correctAnswer)          btn.classList.add('correct');
-    else if (id===choiceId&&!isCorrect) btn.classList.add('wrong');
-    else                                btn.classList.add('dimmed');
+  
+  // Display result in Co-pilot
+  html('copilot-text', result.feedbackHtml);
+  
+  // Create Next Step Button
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn-next';
+  nextBtn.style.marginTop = '10px';
+  nextBtn.textContent = G.qIdx === G.activeScenarios.length - 1 ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+  nextBtn.addEventListener('click', () => {
+    G.qIdx++;
+    loadSimulationStep();
   });
-
-  hide('hint-btn'); hide('skip-btn'); hide('hint-strip');
-
-  // Verdict
-  const verdict = el('feedback-verdict');
-  if (verdict) {
-    verdict.textContent = isCorrect
-      ? `✅ Correct  +${pts} pts${mult>1?' ('+mult+'× streak)':''}`
-      : '❌ Incorrect — 0 pts';
-    verdict.style.color = isCorrect ? 'var(--grn)' : 'var(--red)';
-  }
-
-  // Streak message
-  const streakEl = el('feedback-streak');
-  if (streakEl) {
-    if (G.streak >= 5)      streakEl.textContent = `🔥🔥 ${G.streak} in a row! 2× multiplier active`;
-    else if (G.streak >= 3) streakEl.textContent = `🔥 ${G.streak} in a row! 1.5× multiplier active`;
-    else                    streakEl.textContent = '';
-  }
-
-  txt('feedback-expl', sc.explanation);
-  show('feedback');
-  updateHUD();
-
-  el('feedback')?.scrollIntoView({behavior:'smooth',block:'nearest'});
-  if (window.innerWidth <= 768) _openBottomSheet();
+  el('copilot-text').appendChild(nextBtn);
 }
 
-// ── Skip ───────────────────────────────────────────────
-function skipQuestion() {
+// ── AI Co-pilot Advice ─────────────────────────────────
+function requestCopilotBriefing() {
+  if (G.xp < 10) {
+    alert("Insufficient XP reserves to request real-time meteorological assistance.");
+    return;
+  }
+  addXP(-10); // Deduct 10 XP as copilot briefing cost
+  G.score = Math.max(0, G.score - 10);
+  txt('score-hud', `${G.score} XP`);
+  
+  const brief = getCopilotBriefing(G.currentScenario);
+  html('copilot-text', brief);
+  
+  el('hint-btn').disabled = true;
+  logOp(`[COPILOT] Real-time support briefing retrieved (-10 XP)`);
+}
+
+// ── Shift End / Debrief ────────────────────────────────
+function endShift() {
   stopTimer();
-  G.streak = 0;
-  G.skipped++;
-  G.history.push({title:G.current.title,correct:false,pts:0,skipped:true,tag:'',correctText:'',explanation:''});
-  G.qIdx++;
-  loadQuestion();
-}
-
-// ── Next ───────────────────────────────────────────────
-function nextQuestion() {
-  G.qIdx++;
-  _closeBottomSheet();
-  loadQuestion();
-  el('right-col')?.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ── Hint (with cost + limit) ───────────────────────────
-function useHint() {
-  if (G.hintsLeft <= 0) return;
-  G.hintsLeft--;
-  G.score = Math.max(0, G.score - HINT_COST);
-
-  const strip = el('hint-strip');
-  const hintTxt = el('hint-text');
-  if (strip && hintTxt) {
-    hintTxt.textContent = G.current.hint || 'Use the satellite readings to guide your decision.';
-    strip.classList.remove('hide');
+  stopSweep();
+  
+  hide('game-screen');
+  show('debrief-screen');
+  
+  const totalSteps = G.activeScenarios.length;
+  const maxPossibleXp = totalSteps * 100;
+  const pct = maxPossibleXp > 0 ? Math.round(G.score / maxPossibleXp * 100) : 0;
+  
+  txt('score-pct', `${pct}%`);
+  txt('score-pts', `${G.score} XP`);
+  txt('stat-correct', G.correct);
+  txt('stat-wrong', G.wrong);
+  txt('stat-skipped', G.partial);
+  txt('stat-best-streak', `${G.correct}/${totalSteps}`);
+  
+  // Debrief Ring styling
+  setTimeout(() => {
+    const ring = el('score-ring');
+    if (ring) {
+      ring.style.strokeDashoffset = 327 * (1 - pct / 100);
+      ring.style.stroke = pct >= 85 ? 'var(--grn)' : pct >= 65 ? 'var(--acc)' : pct >= 45 ? 'var(--gold)' : 'var(--red)';
+    }
+  }, 200);
+  
+  // Render detailed review logs
+  const rList = el('review-list');
+  if (rList) {
+    rList.innerHTML = '';
+    G.history.forEach((h, idx) => {
+      const card = document.createElement('div');
+      card.className = `history-review-card ${h.outcomeClass}`;
+      card.innerHTML = `
+        <div class="hr-header">
+          <span>STEP ${idx + 1}: ${h.title}</span>
+          <span style="color:${h.outcomeClass==='correct'?'var(--grn)':h.outcomeClass==='partial'?'var(--gold)':'var(--red)'}">${h.score}/100 XP</span>
+        </div>
+        <div class="hr-details">${h.feedbackHtml}</div>
+      `;
+      rList.appendChild(card);
+    });
   }
-
-  const hb = el('hint-btn');
-  if (hb) hb.disabled = true;
-  txt('hints-left', `${G.hintsLeft} hint${G.hintsLeft!==1?'s':''} left`);
-  updateHUD();
+  
+  // Unlocks and Achievements notifications
+  const unlocks = el('debrief-unlocks');
+  if (unlocks) {
+    unlocks.innerHTML = '';
+    const newRank = getRank(G.xp);
+    let notifications = [];
+    
+    // Check if new stations are unlocked
+    Object.keys(STATIONS).forEach(id => {
+      const st = STATIONS[id];
+      // If XP just passed unlocked threshold during this shift
+      if (G.xp >= st.unlockedAt && (G.xp - G.score) < st.unlockedAt && st.unlockedAt > 0) {
+        notifications.push(`🌍 <strong>NEW RADAR SECTOR UNLOCKED:</strong> decryptions active for ${st.name}!`);
+      }
+    });
+    
+    if (notifications.length > 0) {
+      unlocks.innerHTML = notifications.join('<br>');
+      show('debrief-unlocks');
+    } else {
+      hide('debrief-unlocks');
+    }
+  }
 }
 
-// ── Timer ──────────────────────────────────────────────
+// ── Timer Systems ──────────────────────────────────────
 function startTimer() {
   G.timerSecs = G.timerMax;
   _renderTimer(G.timerSecs);
-  cls('timer-wrap','urgent',false);
-
+  
   G.timerInterval = setInterval(() => {
     G.timerSecs--;
     _renderTimer(G.timerSecs);
-
-    if (G.timerSecs <= 8) cls('timer-wrap','urgent',true);
-
+    
     if (G.timerSecs <= 0) {
       stopTimer();
-      _timeOut();
+      timeOut();
     }
   }, 1000);
 }
 
 function stopTimer() {
-  if (G.timerInterval) { clearInterval(G.timerInterval); G.timerInterval=null; }
+  if (G.timerInterval) {
+    clearInterval(G.timerInterval);
+    G.timerInterval = null;
+  }
 }
 
 function _renderTimer(secs) {
-  txt('timer-num', Math.max(0,secs));
-  const ring = el('timer-ring');
-  if (ring) {
-    const pct = Math.max(0, secs / G.timerMax);
-    ring.style.strokeDashoffset = 132 * (1 - pct);
-    if (pct > .5)      ring.style.stroke = 'var(--grn)';
-    else if (pct > .2) ring.style.stroke = 'var(--gold)';
-    else               ring.style.stroke = 'var(--red)';
+  txt('timer-num', `${secs}s`);
+  const box = el('timer-box');
+  if (box) {
+    box.classList.toggle('urgent', secs <= 8);
   }
 }
 
-function _timeOut() {
-  // Auto-mark as wrong, show correct answer
-  G.streak = 0;
+function timeOut() {
+  logOp(`[WARN] Shift timeline exceeded. Zero forecast capability calculated.`);
   G.wrong++;
-  G.answered++;
-  const sc = G.current;
-  const tag = sc.choices.find(c=>c.id===sc.correctAnswer)?.tag||'General';
-  if (!G.topicStats[tag]) G.topicStats[tag]={correct:0,total:0};
-  G.topicStats[tag].total++;
-  G.history.push({title:sc.title,correct:false,pts:0,skipped:false,tag,
-    correctText:sc.choices.find(c=>c.id===sc.correctAnswer)?.text||'',
-    explanation:sc.explanation});
-
-  document.querySelectorAll('.choice-btn').forEach(btn => {
-    btn.disabled = true;
-    if (btn.dataset.id===sc.correctAnswer) btn.classList.add('correct');
-    else btn.classList.add('dimmed');
+  
+  G.history.push({
+    title: G.currentScenario.title,
+    score: 0,
+    outcomeClass: "wrong",
+    feedbackHtml: `<p style="color:var(--red)"><strong>TIMELINE EXCEEDED:</strong> Forecaster failed to issue alerts within operational limits.</p>
+                   <p style="font-size:0.8rem; margin-top:8px">${G.currentScenario.explanation}</p>`
   });
-
-  hide('hint-btn'); hide('skip-btn');
-  const verdict = el('feedback-verdict');
-  if (verdict) { verdict.textContent = '⏱️ Time\'s up — 0 pts'; verdict.style.color='var(--gold)'; }
-  txt('feedback-streak','');
-  txt('feedback-expl', sc.explanation);
-  show('feedback');
-  updateHUD();
-  if (window.innerWidth<=768) _openBottomSheet();
+  
+  // Load next button automatically in co-pilot
+  html('copilot-text', `<p style="color:var(--red)">⏱️ SHIFT TIMELINE EXCEEDED — 0 XP awarded</p>`);
+  
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn-next';
+  nextBtn.style.marginTop = '10px';
+  nextBtn.textContent = G.qIdx === G.activeScenarios.length - 1 ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+  nextBtn.addEventListener('click', () => {
+    G.qIdx++;
+    loadSimulationStep();
+  });
+  el('copilot-text').appendChild(nextBtn);
 }
 
-// ── Band change ────────────────────────────────────────
+// ── Abort & Bands ──────────────────────────────────────
+function abortShift() {
+  if (confirm("Abort current duty shift? Career progression points will not be modified.")) {
+    stopTimer();
+    stopSweep();
+    hide('game-screen');
+    show('title-screen');
+    updateCareerHUD();
+  }
+}
+
 function changeBand(b) {
   G.band = b;
-  ['ir','wv','btd'].forEach(id => cls('band-'+id,'active',id.toUpperCase()===b));
-
-  // Clear required pulse if user switched to the right band
-  const reqBand = BAND_REQUIRED[G.current?.mapType];
-  ['ir','wv','btd'].forEach(id => cls('band-'+id,'required',reqBand&&id.toUpperCase()===reqBand&&b!==reqBand));
-
-  const bh = el('band-hint');
-  if (bh) bh.style.display = (reqBand && b!==reqBand) ? 'block' : 'none';
-
-  txt('map-label', _bandLabel(b));
-  drawMap(el('sat-map'), G.current, b);
-  show('img-loading'); css('img-credit','display','none');
-  fetchSatImage(G.current, b)
-    .then(()=>{ hide('img-loading'); css('img-credit','display','block'); })
-    .catch(()=> hide('img-loading'));
-}
-
-function _bandLabel(b) {
-  return {IR:'IR 11μm',WV:'WV 6.2μm',BTD:'BTD 8.6–11μm'}[b]||b;
-}
-
-// ── HUD ────────────────────────────────────────────────
-function updateHUD() {
-  css('prog-bar','width',(G.qIdx/G.totalQ*100)+'%');
-  txt('q-hud',`Q ${G.qIdx+1} / ${G.totalQ}`);
-  txt('score-hud', G.score+' pts');
-  txt('acc-hud','Acc '+(G.answered?Math.round(G.correct/G.answered*100)+'%':'—'));
-
-  const streakEl = el('streak-hud');
-  if (streakEl) {
-    if (G.streak >= 2) {
-      streakEl.textContent = `🔥 ${G.streak}`;
-      streakEl.classList.remove('hide');
-    } else {
-      streakEl.classList.add('hide');
-    }
-  }
-}
-
-// ── Debrief ────────────────────────────────────────────
-function showDebrief() {
-  stopTimer();
-  stopSweep();
-  hide('game-screen');
-  show('debrief-screen');
-
-  const max = G.totalQ * (PTS[G.level]??50);
-  const pct = max>0 ? Math.round(G.score/max*100) : 0;
-
-  const titles = {100:'🏆 Perfect Mission',85:'🛰️ Outstanding Forecaster',65:'📡 Mission Success',0:'🌧️ Keep Training'};
-  const titleKey = Object.keys(titles).reverse().find(k=>pct>=+k);
-  txt('debrief-title', titles[titleKey]);
-  txt('debrief-sub', `${G.level.charAt(0).toUpperCase()+G.level.slice(1)} · ${G.answered} answered`);
-  txt('score-pct', pct+'%');
-  txt('score-pts', G.score+' pts');
-  txt('stat-correct', G.correct);
-  txt('stat-wrong',   G.wrong);
-  txt('stat-skipped', G.skipped);
-  txt('stat-best-streak', G.bestStreak);
-
-  setTimeout(()=>{
-    const ring = el('score-ring');
-    if (ring) {
-      ring.style.strokeDashoffset = 327*(1-pct/100);
-      ring.style.stroke = pct>=85?'var(--grn)':pct>=65?'var(--acc)':pct>=40?'var(--gold)':'var(--red)';
-    }
-  }, 200);
-
-  // Save best score to localStorage
-  _saveBestScore(G.level, G.score, pct);
-
-  // Topic breakdown
-  _renderTopicBreakdown();
-
-  // Wrong answer review
-  _renderWrongReview();
-
-  // History cards
-  const grid = el('history-grid');
-  if (grid) {
-    grid.innerHTML = '';
-    G.history.forEach((h,i)=>{
-      const card = document.createElement('div');
-      const cls  = h.skipped?'skipped':h.correct?'correct':'wrong';
-      card.className = `hist-card ${cls}`;
-      const col  = h.skipped?'var(--txt3)':h.correct?'var(--grn)':'var(--red)';
-      const pts  = h.skipped?'skipped':h.correct?`+${h.pts} pts`:'0 pts';
-      card.innerHTML = `<div class="hist-q">Q${i+1}</div>
-        <div class="hist-title">${h.title.slice(0,34)}${h.title.length>34?'…':''}</div>
-        <div class="hist-result" style="color:${col}">${pts}</div>`;
-      grid.appendChild(card);
-    });
-  }
-}
-
-function _renderTopicBreakdown() {
-  const grid = el('topic-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  Object.entries(G.topicStats).forEach(([tag,{correct,total}])=>{
-    const pct = total>0 ? Math.round(correct/total*100) : 0;
-    const col = pct>=80?'var(--grn)':pct>=50?'var(--gold)':'var(--red)';
-    const card = document.createElement('div');
-    card.className = 'topic-card';
-    card.innerHTML = `<div class="topic-name">${tag}</div>
-      <div class="topic-bar-wrap">
-        <div class="topic-bar-track">
-          <div class="topic-bar-fill" style="width:${pct}%;background:${col}"></div>
-        </div>
-        <span class="topic-score">${correct}/${total} (${pct}%)</span>
-      </div>`;
-    grid.appendChild(card);
+  document.querySelectorAll('.btn-band').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(b));
   });
-  const section = el('topic-breakdown');
-  if (section) section.style.display = Object.keys(G.topicStats).length ? 'block' : 'none';
+  
+  txt('map-label', `BAND: ${b === 'IR' ? 'IR 11μm' : b === 'WV' ? 'WV 6.2μm' : 'BTD 8.6-11μm'}`);
+  logOp(`[SENSOR] Spectral channel adjusted to ${b}`);
+  
+  // Redraw map with new band
+  drawMap(el('sat-map'), G.currentScenario, G.band);
+  show('img-loading');
+  fetchSatImage(G.currentScenario, G.band)
+    .then(() => hide('img-loading'))
+    .catch(() => hide('img-loading'));
 }
 
-function _renderWrongReview() {
-  const list = el('review-list');
-  if (!list) return;
-  list.innerHTML = '';
-  const wrongs = G.history.filter(h=>!h.correct&&!h.skipped&&h.correctText);
-  wrongs.forEach(h=>{
-    const card = document.createElement('div');
-    card.className = 'review-card';
-    card.innerHTML = `<div class="review-q-title">${h.title}</div>
-      <div class="review-correct">✅ Correct answer: <span>${h.correctText}</span></div>
-      <div class="review-expl">${h.explanation}</div>`;
-    list.appendChild(card);
-  });
-  const section = el('review-section');
-  if (section) section.style.display = wrongs.length ? 'block' : 'none';
-}
-
-// ── localStorage persistence ───────────────────────────
-function _saveBestScore(level, score, pct) {
-  try {
-    const key = 'mw_best_'+level;
-    const prev = JSON.parse(localStorage.getItem(key)||'{}');
-    if (!prev.score || score > prev.score) {
-      localStorage.setItem(key, JSON.stringify({score, pct, date: new Date().toLocaleDateString()}));
-    }
-  } catch(e) {}
-}
-
-function _renderBestScores() {
-  const wrap = el('best-scores');
-  if (!wrap) return;
-  const levels = ['beginner','intermediate','advanced','master'];
-  const items = levels.map(lvl=>{
-    try {
-      const d = JSON.parse(localStorage.getItem('mw_best_'+lvl)||'null');
-      if (d) return `<span class="best-score-item">${lvl.charAt(0).toUpperCase()+lvl.slice(1)}: <strong>${d.score} pts</strong> (${d.pct}%)</span>`;
-    } catch(e) {}
-    return null;
-  }).filter(Boolean);
-  wrap.innerHTML = items.length ? items.join('') : '';
-}
-
-// ── Mobile bottom sheet ────────────────────────────────
-function _initBottomSheet() {
-  const sheet = el('bottom-sheet');
-  const backdrop = el('bs-backdrop');
-  if (!sheet) return;
-
-  // Tap backdrop to close
-  backdrop?.addEventListener('click', _closeBottomSheet);
-
-  // On mobile, mirror right-col content into bottom sheet
-  // We do this by moving DOM nodes when opening
-}
-
-function _openBottomSheet() {
-  const sheet = el('bottom-sheet');
-  const backdrop = el('bs-backdrop');
-  const bsContent = el('bs-content');
-  const rightCol = el('right-col');
-  if (!sheet || !bsContent || !rightCol) return;
-
-  // Clone right-col content into sheet
-  bsContent.innerHTML = rightCol.innerHTML;
-
-  // Wire up next button in the clone
-  const nextBtn = bsContent.querySelector('#next-btn');
-  if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
-
-  sheet.classList.add('open');
-  backdrop?.classList.remove('hide');
-  document.body.style.overflow = 'hidden';
-}
-
-function _closeBottomSheet() {
-  el('bottom-sheet')?.classList.remove('open');
-  el('bs-backdrop')?.classList.add('hide');
-  document.body.style.overflow = '';
+// ── Operations Event logger ────────────────────────────
+function logOp(text, type = "normal") {
+  const panel = el('ops-log-panel');
+  if (!panel) return;
+  
+  const time = new Date().toLocaleTimeString().slice(0, 8);
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type === 'alert' ? 'log-alert' : type === 'correct' ? 'log-correct' : ''}`;
+  entry.textContent = `[${time}] ${text}`;
+  
+  panel.appendChild(entry);
+  panel.scrollTop = panel.scrollHeight;
 }
 
 // ── Utilities ──────────────────────────────────────────
 function shuffle(arr) {
-  for (let i=arr.length-1;i>0;i--) {
-    const j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }

@@ -4,7 +4,7 @@
 // (e.g. https://user.github.io/satellite_meteorology_quiz/)
 // ═══════════════════════════════════════════════════════
 
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v2.0.0';
 const SHELL_CACHE = 'mw-shell-' + APP_VERSION;
 const IMAGE_CACHE = 'mw-images-' + APP_VERSION;
 const FONT_CACHE  = 'mw-fonts-'  + APP_VERSION;
@@ -21,6 +21,8 @@ const SHELL_ASSETS = [
   BASE + '/js/map.js',
   BASE + '/js/scenarios.js',
   BASE + '/js/imagery.js',
+  BASE + '/js/copilot.js',
+  BASE + '/js/edu.js',
   BASE + '/icons/icon-192.png',
   BASE + '/icons/icon-512.png',
 ];

@@ -9,7 +9,8 @@
 // The procedural cloud blobs are ONLY used when no real
 // image is available (offline / fetch failed).
 // ═══════════════════════════════════════════════════════
-import { fetchSatImage } from './imagery.js';
+import { STATIONS } from './scenarios.js';
+import { fetchSatImage, SCENARIO_META } from './imagery.js';
 
 let _currentKey = null;
 
@@ -83,6 +84,11 @@ function _drawReal(canvas, img, scenario, band) {
   _drawGrid(ctx, W, H);
   _drawColorbar(ctx, W, H, band);
 
+  // V2 Overlays
+  _drawWindVectors(ctx, W, H, scenario.mapType);
+  _drawStormTracking(ctx, W, H, scenario.mapType);
+  _drawStationOverlay(ctx, W, H, scenario);
+
   // 4. Convective core markers (small glows, not opaque blobs)
   if (['convective_burst','btd_challenge','coast_storm'].includes(scenario.mapType)) {
     const seed = [...(scenario.id||'x')].reduce((a,c) => a + c.charCodeAt(0)*31, 0);
@@ -139,6 +145,12 @@ function _drawProcedural(canvas, scenario, band, W, H) {
     ctx.putImageData(img, 0, 0);
     _drawGrid(ctx, W, H);
     _drawColorbar(ctx, W, H, band);
+
+    // V2 Overlays
+    _drawWindVectors(ctx, W, H, scenario.mapType);
+    _drawStormTracking(ctx, W, H, scenario.mapType);
+    _drawStationOverlay(ctx, W, H, scenario);
+
     if (['convective_burst','btd_challenge','coast_storm'].includes(scenario.mapType)) {
       _drawConvectiveMarkers(ctx, W, H, rng);
     }
@@ -340,4 +352,124 @@ function toRGB(t, band) {
   if (t<.33) return [240,80,80];
   if (t<.66) {const f=(t-.33)/.33;return[L(240,250,f),L(80,220,f),L(80,50,f)];}
   const f=(t-.66)/.34;return[L(250,55,f),L(220,178,f),L(50,218,f)];
+}
+
+function _drawStationOverlay(ctx, W, H, scenario) {
+  if (!scenario || !scenario.station) return;
+  const stationMeta = STATIONS[scenario.station];
+  if (!stationMeta) return;
+
+  const meta = SCENARIO_META[scenario.id] || SCENARIO_META[scenario.mapType] || SCENARIO_META._default;
+  const [minLon, minLat, maxLon, maxLat] = meta.bbox;
+  const [lat, lon] = stationMeta.coord;
+
+  // Map lon/lat to canvas x/y
+  const x = ((lon - minLon) / (maxLon - minLon)) * W;
+  const y = (1 - (lat - minLat) / (maxLat - minLat)) * H;
+
+  // Draw scope target
+  ctx.strokeStyle = '#00f2fe';
+  ctx.lineWidth = 1.5;
+
+  // Outer dashed circle
+  ctx.save();
+  ctx.strokeStyle = '#00f2fe';
+  ctx.setLineDash([3, 2]);
+  ctx.beginPath();
+  ctx.arc(x, y, 16, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // Inner crosshair
+  ctx.beginPath();
+  ctx.moveTo(x - 6, y); ctx.lineTo(x + 6, y);
+  ctx.moveTo(x, y - 6); ctx.lineTo(x, y + 6);
+  ctx.stroke();
+
+  // Center solid dot
+  ctx.fillStyle = '#ff073a';
+  ctx.beginPath();
+  ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 9px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(stationMeta.name.split(' ')[0], x + 10, y + 3);
+}
+
+function _drawWindVectors(ctx, W, H, mapType) {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+  ctx.fillStyle = 'rgba(0, 242, 254, 0.08)';
+  ctx.lineWidth = 1;
+
+  const spacing = 45;
+  for (let x = spacing; x < W; x += spacing) {
+    for (let y = spacing; y < H; y += spacing) {
+      let dx = 15;
+      let dy = 0;
+
+      if (['coast_storm', 'btd_challenge'].includes(mapType)) {
+        const cx = W / 2;
+        const cy = H / 2;
+        const rx = x - cx;
+        const ry = y - cy;
+        const dist = Math.sqrt(rx * rx + ry * ry) || 1;
+        dx = (-ry / dist) * 14;
+        dy = (rx / dist) * 14;
+      } else if (mapType === 'orographic') {
+        dx = 15;
+        dy = -2;
+      } else {
+        dx = 12;
+        dy = -8;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + dx, y + dy);
+      ctx.stroke();
+
+      const angle = Math.atan2(dy, dx);
+      ctx.beginPath();
+      ctx.moveTo(x + dx, y + dy);
+      ctx.lineTo(x + dx - 4 * Math.cos(angle - Math.PI / 6), y + dy - 4 * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x + dx - 4 * Math.cos(angle + Math.PI / 6), y + dy - 4 * Math.sin(angle + Math.PI / 6));
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function _drawStormTracking(ctx, W, H, mapType) {
+  if (!['convective_burst', 'coast_storm', 'btd_challenge'].includes(mapType)) return;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255, 7, 58, 0.4)';
+  ctx.fillStyle = 'rgba(255, 7, 58, 0.4)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 3]);
+
+  const startX = W * 0.4;
+  const startY = H * 0.6;
+  const endX = W * 0.55;
+  const endY = H * 0.35;
+
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+
+  const angle = Math.atan2(endY - startY, endX - startX);
+  ctx.beginPath();
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(endX - 8 * Math.cos(angle - Math.PI / 6), endY - 8 * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(endX - 8 * Math.cos(angle + Math.PI / 6), endY - 8 * Math.sin(angle + Math.PI / 6));
+  ctx.fill();
+
+  ctx.fillStyle = '#ff073a';
+  ctx.font = 'bold 7px monospace';
+  ctx.fillText('STORM PATH PROJECTION', endX + 8, endY - 4);
+  ctx.restore();
 }
