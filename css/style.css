@@ -31,7 +31,7 @@ html, body {
   background: var(--bg); 
   color: var(--txt); 
   font-family: var(--fm); 
-  font-size: 13px; 
+  font-size: 15px; 
   line-height: 1.4; 
   overflow: hidden; 
 }
@@ -433,7 +433,7 @@ html, body {
 .ops-sim-layout {
   flex: 1;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 0.95fr 1.05fr;
   overflow: hidden;
 }
 
