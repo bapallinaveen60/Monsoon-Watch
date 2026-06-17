@@ -44,6 +44,9 @@ const G = {
   forecastRain: "moderate",
   forecastClass: "stratiform",
   forecastHazard: "moderate",
+
+  // Transition state
+  awaitingNext: false,
   
   // System variables
   band: "IR",
@@ -94,7 +97,6 @@ export function initGame() {
   
   el('abort-btn')?.addEventListener('click', abortShift);
   el('submit-forecast-btn')?.addEventListener('click', submitForecast);
-  el('hint-btn')?.addEventListener('click', requestCopilotBriefing);
   
   el('play-again')?.addEventListener('click', () => {
     hide('debrief-screen');
@@ -407,17 +409,13 @@ function startShift(type) {
   G.band = "IR";
   
   if (type === "career") {
-    // Populate scenarios based on station and level
+    // Populate all scenarios for this level to allow exactly 20 questions
     const pool = DB[G.selectedLevel] || [];
-    // Filter by station if possible, else fallback
-    let matched = pool.filter(sc => sc.station === G.selectedStation);
-    if (matched.length === 0) matched = pool; // Fallback
-    
-    G.activeScenarios = [...matched];
+    G.activeScenarios = [...pool];
     shuffle(G.activeScenarios);
     
-    // Take up to 10 scenarios for this shift
-    G.activeScenarios = G.activeScenarios.slice(0, 10);
+    // Limit to 20 questions
+    G.activeScenarios = G.activeScenarios.slice(0, 20);
   } else if (type === "daily") {
     // Select 3 random high-convective scenarios from Advanced/Master pools
     const all = [...DB.advanced, ...DB.master];
@@ -459,18 +457,40 @@ function loadSimulationStep() {
   G.forecastClass = "stratiform";
   G.forecastHazard = "moderate";
   
-  // Reset input selects
-  el('forecast-rain').value = "moderate";
-  el('forecast-class').value = "stratiform";
-  el('forecast-hazard').value = "moderate";
+  // Reset input selects and re-enable them
+  const rainSelect = el('forecast-rain');
+  const classSelect = el('forecast-class');
+  const hazardSelect = el('forecast-hazard');
+
+  if (rainSelect) {
+    rainSelect.value = "moderate";
+    rainSelect.disabled = false;
+  }
+  if (classSelect) {
+    classSelect.value = "stratiform";
+    classSelect.disabled = false;
+  }
+  if (hazardSelect) {
+    hazardSelect.value = "moderate";
+    hazardSelect.disabled = false;
+  }
+
   document.querySelectorAll('.alert-btn').forEach(btn => {
+    btn.disabled = false;
     btn.classList.toggle('active', btn.dataset.alert === "green");
   });
   
-  // Re-enable elements
-  el('submit-forecast-btn').disabled = false;
-  el('hint-btn').disabled = false;
-  html('copilot-text', "Satellite telemetry received. Issue forecast advisories.");
+  // Reset submit button state and text
+  G.awaitingNext = false;
+  const submitBtn = el('submit-forecast-btn');
+  if (submitBtn) {
+    submitBtn.textContent = "SUBMIT FORECAST FOR EVALUATION";
+    submitBtn.disabled = false;
+  }
+  
+  // Hide feedback container
+  hide('forecast-feedback');
+  html('copilot-text', "");
   
   renderSimulationTelemetry();
   startTimer();
@@ -520,9 +540,14 @@ function _renderTelemetryCell(cellId, valId, threshId, val, label, alertClass) {
 
 // ── Submit Forecast Action ─────────────────────────────
 function submitForecast() {
+  // If we are awaiting next, this button acts as the transition to the next scenario
+  if (G.awaitingNext) {
+    G.qIdx++;
+    loadSimulationStep();
+    return;
+  }
+
   stopTimer();
-  el('submit-forecast-btn').disabled = true;
-  el('hint-btn').disabled = true;
   
   const sc = G.currentScenario;
   const userForecast = {
@@ -560,37 +585,34 @@ function submitForecast() {
     feedbackHtml: result.feedbackHtml
   });
   
-  // Display result in Co-pilot
+  // Display result in feedback panel
   html('copilot-text', result.feedbackHtml);
+  show('forecast-feedback');
   
-  // Create Next Step Button
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'btn-next';
-  nextBtn.style.marginTop = '10px';
-  nextBtn.textContent = G.qIdx === G.activeScenarios.length - 1 ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
-  nextBtn.addEventListener('click', () => {
-    G.qIdx++;
-    loadSimulationStep();
+  // Disable forecast input select elements so user can't change their answers
+  const rainSelect = el('forecast-rain');
+  const classSelect = el('forecast-class');
+  const hazardSelect = el('forecast-hazard');
+  if (rainSelect) rainSelect.disabled = true;
+  if (classSelect) classSelect.disabled = true;
+  if (hazardSelect) hazardSelect.disabled = true;
+
+  document.querySelectorAll('.alert-btn').forEach(btn => {
+    btn.disabled = true;
   });
-  el('copilot-text').appendChild(nextBtn);
+
+  // Set dual-state trigger to proceed
+  G.awaitingNext = true;
+  
+  const submitBtn = el('submit-forecast-btn');
+  if (submitBtn) {
+    const isLastQuestion = G.qIdx === G.activeScenarios.length - 1;
+    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+    submitBtn.disabled = false;
+  }
 }
 
-// ── AI Co-pilot Advice ─────────────────────────────────
-function requestCopilotBriefing() {
-  if (G.xp < 10) {
-    alert("Insufficient XP reserves to request real-time meteorological assistance.");
-    return;
-  }
-  addXP(-10); // Deduct 10 XP as copilot briefing cost
-  G.score = Math.max(0, G.score - 10);
-  txt('score-hud', `${G.score} XP`);
-  
-  const brief = getCopilotBriefing(G.currentScenario);
-  html('copilot-text', brief);
-  
-  el('hint-btn').disabled = true;
-  logOp(`[COPILOT] Real-time support briefing retrieved (-10 XP)`);
-}
+// Hint functionality has been removed in alignment with Co-pilot section removal.
 
 // ── Shift End / Debrief ────────────────────────────────
 function endShift() {
@@ -610,6 +632,10 @@ function endShift() {
   txt('stat-wrong', G.wrong);
   txt('stat-skipped', G.partial);
   txt('stat-best-streak', `${G.correct}/${totalSteps}`);
+  
+  // Set debrief subtitle details dynamically
+  const st = STATIONS[G.selectedStation] || { name: "Central Operations" };
+  txt('debrief-sub', `${st.name.toUpperCase()} · ${totalSteps} scenarios analysed`);
   
   // Debrief Ring styling
   setTimeout(() => {
@@ -698,26 +724,40 @@ function timeOut() {
   logOp(`[WARN] Shift timeline exceeded. Zero forecast capability calculated.`);
   G.wrong++;
   
+  const explanationHtml = `<p style="color:var(--red)">⏱️ SHIFT TIMELINE EXCEEDED — 0 XP awarded</p>
+                           <p style="color:var(--red); font-size:0.85rem;"><strong>TIMELINE EXCEEDED:</strong> Forecaster failed to issue alerts within operational limits.</p>
+                           <p style="font-size:0.8rem; margin-top:8px">${G.currentScenario.explanation}</p>`;
+  
   G.history.push({
     title: G.currentScenario.title,
     score: 0,
     outcomeClass: "wrong",
-    feedbackHtml: `<p style="color:var(--red)"><strong>TIMELINE EXCEEDED:</strong> Forecaster failed to issue alerts within operational limits.</p>
-                   <p style="font-size:0.8rem; margin-top:8px">${G.currentScenario.explanation}</p>`
+    feedbackHtml: explanationHtml
   });
   
-  // Load next button automatically in co-pilot
-  html('copilot-text', `<p style="color:var(--red)">⏱️ SHIFT TIMELINE EXCEEDED — 0 XP awarded</p>`);
+  html('copilot-text', explanationHtml);
+  show('forecast-feedback');
   
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'btn-next';
-  nextBtn.style.marginTop = '10px';
-  nextBtn.textContent = G.qIdx === G.activeScenarios.length - 1 ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
-  nextBtn.addEventListener('click', () => {
-    G.qIdx++;
-    loadSimulationStep();
+  // Disable forecast input select elements
+  const rainSelect = el('forecast-rain');
+  const classSelect = el('forecast-class');
+  const hazardSelect = el('forecast-hazard');
+  if (rainSelect) rainSelect.disabled = true;
+  if (classSelect) classSelect.disabled = true;
+  if (hazardSelect) hazardSelect.disabled = true;
+
+  document.querySelectorAll('.alert-btn').forEach(btn => {
+    btn.disabled = true;
   });
-  el('copilot-text').appendChild(nextBtn);
+
+  G.awaitingNext = true;
+  
+  const submitBtn = el('submit-forecast-btn');
+  if (submitBtn) {
+    const isLastQuestion = G.qIdx === G.activeScenarios.length - 1;
+    submitBtn.textContent = isLastQuestion ? "FINISH SHIFT" : "NEXT SIMULATION STEP";
+    submitBtn.disabled = false;
+  }
 }
 
 // ── Abort & Bands ──────────────────────────────────────
