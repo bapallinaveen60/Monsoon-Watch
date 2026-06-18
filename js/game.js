@@ -82,9 +82,14 @@ export function initGame() {
   
   // Launch Career Simulation
   el('launch-btn')?.addEventListener('click', () => {
+    if (!G.selectedStation) {
+      alert("Please select a regional station node (glowing dot) on the map first to inspect its climate and launch a simulation shift!");
+      return;
+    }
     const unlocked = isStationUnlocked(G.selectedStation);
     if (!unlocked) {
-      alert("This meteorological station is currently locked. Gain more XP to unlock subsequent regional sectors.");
+      const met = STATIONS[G.selectedStation];
+      alert(`The ${met ? met.name : 'selected'} station is locked. You need ${met ? met.unlockedAt : 0} XP to unlock this sector.`);
       return;
     }
     startShift("career");
