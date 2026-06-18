@@ -1069,3 +1069,129 @@ html, body {
     font-size: 0.7rem !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   FORECAST CONSOLE MULTIPLE-CHOICE CARDS (V1 PORT)
+   ═══════════════════════════════════════════════════════ */
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem;
+}
+
+.choice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--s2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--r);
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.choice-card:hover:not(.disabled) {
+  border-color: var(--bdr2);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.choice-card.selected {
+  border-color: var(--acc);
+  background: rgba(0, 242, 254, 0.04);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+}
+
+.choice-card.correct-ans {
+  border-color: var(--grn) !important;
+  background: rgba(57, 255, 20, 0.05) !important;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.15) !important;
+}
+
+.choice-card.wrong-ans {
+  border-color: var(--red) !important;
+  background: rgba(255, 7, 58, 0.05) !important;
+  box-shadow: 0 0 12px rgba(255, 7, 58, 0.15) !important;
+}
+
+.choice-card.disabled {
+  cursor: not-allowed;
+}
+
+.choice-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bdr);
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--txt2);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.choice-card.selected .choice-badge {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: #000;
+}
+
+.choice-card.correct-ans .choice-badge {
+  background: var(--grn);
+  border-color: var(--grn);
+  color: #000;
+}
+
+.choice-card.wrong-ans .choice-badge {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.choice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-grow: 1;
+}
+
+.choice-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.choice-tag {
+  color: var(--txt3);
+  text-transform: uppercase;
+}
+
+.choice-risk {
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 0.05rem 0.3rem;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+}
+
+.choice-text {
+  font-size: 0.72rem;
+  color: var(--txt);
+  line-height: 1.4;
+}
+

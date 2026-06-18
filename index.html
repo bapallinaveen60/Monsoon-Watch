@@ -311,50 +311,8 @@
           <h3>FORECAST ACTION CONSOLE</h3>
         </div>
         
-        <div class="console-grid">
-          <!-- 1. Alert warning category -->
-          <div class="console-field">
-            <label>ALERT LEVEL</label>
-            <div class="alert-selector">
-              <button class="alert-btn val-green" data-alert="green">GREEN</button>
-              <button class="alert-btn val-yellow" data-alert="yellow">YELLOW</button>
-              <button class="alert-btn val-orange" data-alert="orange">ORANGE</button>
-              <button class="alert-btn val-red" data-alert="red">RED</button>
-            </div>
-          </div>
-
-          <!-- 2. Rain rate estimate -->
-          <div class="console-field">
-            <label for="forecast-rain">FORECAST PRECIPITATION</label>
-            <select class="cyber-select" id="forecast-rain">
-              <option value="none">NO RAIN</option>
-              <option value="light">LIGHT PRECIPITATION (&lt; 2.5 mm/h)</option>
-              <option value="moderate" selected>MODERATE RAIN (2.5 - 7.5 mm/h)</option>
-              <option value="heavy">HEAVY CONVECTIVE RAIN (&gt; 7.5 mm/h)</option>
-            </select>
-          </div>
-
-          <!-- 3. System Class -->
-          <div class="console-field">
-            <label for="forecast-class">CLOUD / SYSTEM CLASSIFICATION</label>
-            <select class="cyber-select" id="forecast-class">
-              <option value="stratiform">STRATIFORM CLOUDS</option>
-              <option value="convective">ACTIVE CONVECTIVE CELL</option>
-              <option value="cirrus">THIN CIRRUS LAYER</option>
-              <option value="deep_convective">DEEP CONVECTIVE Cumulonimbus</option>
-              <option value="shallow_warm">SHALLOW WARM CLOUDS</option>
-            </select>
-          </div>
-
-          <!-- 4. Hazard Predictor -->
-          <div class="console-field">
-            <label for="forecast-hazard">HAZARD / RISK ASSESSMENT</label>
-            <select class="cyber-select" id="forecast-hazard">
-              <option value="low">LOW RISK (Minor flooding risk)</option>
-              <option value="moderate" selected>MODERATE RISK (Localized waterlogging)</option>
-              <option value="high">HIGH RISK (Flash floods / severe squall)</option>
-            </select>
-          </div>
+        <div class="choices-container" id="choices-list">
+          <!-- Dynamically populated choices cards -->
         </div>
 
         <div id="forecast-feedback" class="copilot-panel hide" style="border-top: 1px dashed var(--bdr); padding-top: 0.85rem; margin: 0 0.85rem 0.85rem;">

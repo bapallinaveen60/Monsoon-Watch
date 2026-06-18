@@ -54,61 +54,29 @@ export function getCopilotBriefing(sc) {
   return analysis;
 }
 
-export function evaluateForecast(user, target) {
-  // user: { rain, alert, systemClass, hazard }
-  // target: { targetRain, targetAlert, targetClass, targetHazard }
+export function evaluateForecast(selectedChoiceId, sc) {
+  const isCorrect = selectedChoiceId === sc.correctAnswer;
+  const score = isCorrect ? 100 : 0;
   
-  let score = 0;
-  let breakdown = [];
+  let rating = isCorrect ? "PERFECT CAPABILITY" : "INACCURATE FORECAST";
+  let ratingColor = isCorrect ? "var(--grn)" : "var(--red)";
   
-  // 1. Rain Rate Category (25 points)
-  if (user.rain === target.targetRain) {
-    score += 25;
-    breakdown.push(`<span class="acc-check">✅</span> <strong>Rainfall:</strong> Correctly forecasted <em>${user.rain.toUpperCase()}</em> (+25 pts)`);
-  } else {
-    breakdown.push(`<span class="acc-err">❌</span> <strong>Rainfall:</strong> Forecasted <em>${user.rain.toUpperCase()}</em>, but actual was <em>${target.targetRain.toUpperCase()}</em>`);
-  }
-
-  // 2. Alert Level (25 points)
-  if (user.alert === target.targetAlert) {
-    score += 25;
-    breakdown.push(`<span class="acc-check">✅</span> <strong>Alert Level:</strong> Correctly issued <em>${user.alert.toUpperCase()} Alert</em> (+25 pts)`);
-  } else {
-    breakdown.push(`<span class="acc-err">❌</span> <strong>Alert Level:</strong> Issued <em>${user.alert.toUpperCase()}</em>, but operational guideline required <em>${target.targetAlert.toUpperCase()}</em>`);
-  }
-
-  // 3. System Classification (25 points)
-  if (user.systemClass === target.targetClass) {
-    score += 25;
-    breakdown.push(`<span class="acc-check">✅</span> <strong>Classification:</strong> Correctly identified as <em>${user.systemClass.replace('_', ' ').toUpperCase()}</em> (+25 pts)`);
-  } else {
-    const actText = target.targetClass.replace('_', ' ').toUpperCase();
-    breakdown.push(`<span class="acc-err">❌</span> <strong>Classification:</strong> Identified as <em>${user.systemClass.replace('_', ' ').toUpperCase()}</em>, actual classification was <em>${actText}</em>`);
-  }
-
-  // 4. Hazard Risk (25 points)
-  if (user.hazard === target.targetHazard) {
-    score += 25;
-    breakdown.push(`<span class="acc-check">✅</span> <strong>Hazard Level:</strong> Correctly assessed as <em>${user.hazard.toUpperCase()} Risk</em> (+25 pts)`);
-  } else {
-    breakdown.push(`<span class="acc-err">❌</span> <strong>Hazard Level:</strong> Assessed <em>${user.hazard.toUpperCase()}</em>, actual risk was <em>${target.targetHazard.toUpperCase()}</em>`);
-  }
-
-  let rating = "NEED TRAINING";
-  let ratingColor = "var(--red)";
-  if (score === 100) { rating = "PERFECT CAPABILITY"; ratingColor = "var(--grn)"; }
-  else if (score >= 75) { rating = "EXCELLENT ANALYSIS"; ratingColor = "var(--acc)"; }
-  else if (score >= 50) { rating = "ACCEPTABLE ACCURACY"; ratingColor = "var(--gold)"; }
-
+  // Find correct choice text and selected choice text
+  const correctChoice = sc.choices ? sc.choices.find(c => c.id === sc.correctAnswer) : null;
+  const selectedChoice = sc.choices ? sc.choices.find(c => c.id === selectedChoiceId) : null;
+  
   let feedbackHtml = `
     <div style="border-left:3px solid ${ratingColor}; padding-left:12px; margin-bottom:12px">
       <h4 style="margin:0; color:${ratingColor}">${rating} (${score}/100 pts)</h4>
-      <div style="font-size:0.85rem; margin-top:6px; display:grid; gap:4px">
-        ${breakdown.join('<br>')}
+      <div style="font-size:0.85rem; margin-top:6px; line-height: 1.4;">
+        ${isCorrect 
+          ? `<span class="acc-check">✅</span> <strong>Correct:</strong> You selected Option ${selectedChoiceId.toUpperCase()}: <em>${selectedChoice ? selectedChoice.risk : ''}</em>` 
+          : `<span class="acc-err">❌</span> <strong>Incorrect:</strong> You selected Option ${selectedChoiceId.toUpperCase()}, but the correct forecast was Option ${sc.correctAnswer.toUpperCase()}: <em>${correctChoice ? correctChoice.risk : ''}</em>`
+        }
       </div>
     </div>
-    <div style="font-size:0.8rem; margin-top:10px; background:rgba(255,255,255,0.03); padding:8px; border-radius:4px">
-      <strong>Co-Pilot Physical Explanation:</strong><br>${target.explanation}
+    <div style="font-size:0.8rem; margin-top:10px; background:rgba(255,255,255,0.03); padding:8px; border-radius:4px; line-height:1.4;">
+      <strong>Co-Pilot Physical Explanation:</strong><br>${sc.explanation}
     </div>
   `;
 

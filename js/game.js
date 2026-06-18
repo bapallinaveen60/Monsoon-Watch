@@ -40,10 +40,7 @@ const G = {
   history: [], // Shift history log
   
   // Active forecast selections
-  forecastAlert: "green",
-  forecastRain: "moderate",
-  forecastClass: "stratiform",
-  forecastHazard: "moderate",
+  selectedChoiceId: null,
 
   // Transition state
   awaitingNext: false,
@@ -122,14 +119,7 @@ export function initGame() {
   });
 
   // Forecast input button selectors
-  document.querySelectorAll('.alert-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.alert-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      G.forecastAlert = btn.dataset.alert;
-      logOp(`[WARN] Alert level adjusted to ${G.forecastAlert.toUpperCase()}`);
-    });
-  });
+
 
   // Visual grid toggles
   el('toggle-grid')?.addEventListener('change', (e) => {
@@ -507,40 +497,56 @@ function loadSimulationStep() {
   
   // Set current scenario
   G.currentScenario = G.activeScenarios[G.qIdx];
-  G.forecastAlert = "green";
-  G.forecastRain = "moderate";
-  G.forecastClass = "stratiform";
-  G.forecastHazard = "moderate";
+  G.selectedChoiceId = null;
   
-  // Reset input selects and re-enable them
-  const rainSelect = el('forecast-rain');
-  const classSelect = el('forecast-class');
-  const hazardSelect = el('forecast-hazard');
-
-  if (rainSelect) {
-    rainSelect.value = "moderate";
-    rainSelect.disabled = false;
+  // Reset and build choices list dynamically
+  const choicesList = el('choices-list');
+  if (choicesList) {
+    choicesList.innerHTML = '';
+    const sc = G.currentScenario;
+    if (sc.choices && Array.isArray(sc.choices)) {
+      sc.choices.forEach(choice => {
+        const card = document.createElement('div');
+        card.className = 'choice-card';
+        card.dataset.choiceId = choice.id;
+        
+        const badgeColor = choice.color || 'var(--txt3)';
+        
+        card.innerHTML = `
+          <div class="choice-badge">${choice.id.toUpperCase()}</div>
+          <div class="choice-content">
+            <div class="choice-meta">
+              <span class="choice-tag">${choice.tag || 'MET PROFILE'}</span>
+              <span class="choice-risk" style="color: ${badgeColor}; border-color: ${badgeColor}; background: ${badgeColor}0d">${choice.risk}</span>
+            </div>
+            <div class="choice-text">${choice.text}</div>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => {
+          if (G.awaitingNext) return;
+          
+          document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          G.selectedChoiceId = choice.id;
+          
+          const submitBtn = el('submit-forecast-btn');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+          }
+        });
+        
+        choicesList.appendChild(card);
+      });
+    }
   }
-  if (classSelect) {
-    classSelect.value = "stratiform";
-    classSelect.disabled = false;
-  }
-  if (hazardSelect) {
-    hazardSelect.value = "moderate";
-    hazardSelect.disabled = false;
-  }
-
-  document.querySelectorAll('.alert-btn').forEach(btn => {
-    btn.disabled = false;
-    btn.classList.toggle('active', btn.dataset.alert === "green");
-  });
   
   // Reset submit button state and text
   G.awaitingNext = false;
   const submitBtn = el('submit-forecast-btn');
   if (submitBtn) {
     submitBtn.textContent = "SUBMIT FORECAST";
-    submitBtn.disabled = false;
+    submitBtn.disabled = true; // Disabled until selection is made
   }
   
   // Reset skip button
@@ -608,17 +614,12 @@ function submitForecast() {
     return;
   }
 
+  if (G.selectedChoiceId === null) return;
+
   stopTimer();
   
   const sc = G.currentScenario;
-  const userForecast = {
-    rain: el('forecast-rain').value,
-    alert: G.forecastAlert,
-    systemClass: el('forecast-class').value,
-    hazard: G.forecastHazard
-  };
-  
-  const result = evaluateForecast(userForecast, sc);
+  const result = evaluateForecast(G.selectedChoiceId, sc);
   
   // Update state statistics
   G.score += result.score;
@@ -628,14 +629,11 @@ function submitForecast() {
   if (result.score === 100) {
     G.correct++;
     outcomeClass = "correct";
-    logOp(`[ACC] PERFECT FORECAST (+100 XP) at ${sc.title}`, "correct");
-  } else if (result.score >= 50) {
-    G.partial++;
-    outcomeClass = "partial";
-    logOp(`[ACC] PARTIAL FORECAST (+${result.score} XP) at ${sc.title}`, "alert");
+    logOp(`[ACC] CORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+100 XP) at ${sc.title}`, "correct");
   } else {
     G.wrong++;
-    logOp(`[ACC] INACCURATE FORECAST WARNING (+${result.score} XP) at ${sc.title}`);
+    outcomeClass = "wrong";
+    logOp(`[ACC] INCORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+0 XP) at ${sc.title}`);
   }
   
   // Save log history
@@ -650,16 +648,15 @@ function submitForecast() {
   html('copilot-text', result.feedbackHtml);
   show('forecast-feedback');
   
-  // Disable forecast input select elements so user can't change their answers
-  const rainSelect = el('forecast-rain');
-  const classSelect = el('forecast-class');
-  const hazardSelect = el('forecast-hazard');
-  if (rainSelect) rainSelect.disabled = true;
-  if (classSelect) classSelect.disabled = true;
-  if (hazardSelect) hazardSelect.disabled = true;
-
-  document.querySelectorAll('.alert-btn').forEach(btn => {
-    btn.disabled = true;
+  // Highlight and disable choices cards
+  document.querySelectorAll('.choice-card').forEach(card => {
+    card.classList.add('disabled');
+    const cId = card.dataset.choiceId;
+    if (cId === sc.correctAnswer) {
+      card.classList.add('correct-ans');
+    } else if (cId === G.selectedChoiceId) {
+      card.classList.add('wrong-ans');
+    }
   });
 
   // Disable skip button during feedback phase
@@ -805,16 +802,13 @@ function timeOut() {
   html('copilot-text', explanationHtml);
   show('forecast-feedback');
   
-  // Disable forecast input select elements
-  const rainSelect = el('forecast-rain');
-  const classSelect = el('forecast-class');
-  const hazardSelect = el('forecast-hazard');
-  if (rainSelect) rainSelect.disabled = true;
-  if (classSelect) classSelect.disabled = true;
-  if (hazardSelect) hazardSelect.disabled = true;
-
-  document.querySelectorAll('.alert-btn').forEach(btn => {
-    btn.disabled = true;
+  // Highlight and disable choices cards
+  document.querySelectorAll('.choice-card').forEach(card => {
+    card.classList.add('disabled');
+    const cId = card.dataset.choiceId;
+    if (cId === G.currentScenario.correctAnswer) {
+      card.classList.add('correct-ans');
+    }
   });
 
   // Disable skip button
