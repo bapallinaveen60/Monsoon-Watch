@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════
 import { DB, STATIONS, HISTORICAL_MISSIONS } from './scenarios.js';
 import { getCopilotBriefing, evaluateForecast, generateDailyChallenge } from './copilot.js';
-import { LESSONS } from './edu.js';
+import { LESSONS, BIBLIOGRAPHY } from './edu.js';
 import { drawMap, startSweep, stopSweep } from './map.js';
 import { fetchSatImage } from './imagery.js';
 
@@ -17,7 +17,11 @@ const RANKS = [
   { xp: 1200, title: "Forecaster" },
   { xp: 1800, title: "Senior Forecaster" },
   { xp: 2500, title: "Regional Director" },
-  { xp: 3500, title: "National Director" }
+  { xp: 3500, title: "National Director" },
+  { xp: 4800, title: "Principal Scientist" },
+  { xp: 6000, title: "Chief Scientist" },
+  { xp: 7500, title: "Senior Meteorological Advisor" },
+  { xp: 9000, title: "Director General" }
 ];
 
 // ── State ──────────────────────────────────────────────
@@ -195,8 +199,7 @@ function getNextRankInfo(xp) {
 }
 
 function isStationUnlocked(stationId) {
-  const met = STATIONS[stationId];
-  return met ? G.xp >= met.unlockedAt : false;
+  return true;
 }
 
 function updateCareerHUD() {
@@ -343,6 +346,27 @@ function initDailyChallenge() {
 }
 
 // ── Academy Lessons ────────────────────────────────────
+function renderBibliography() {
+  const bibList = el('bibliography-list');
+  if (!bibList) return;
+  bibList.innerHTML = '';
+  
+  BIBLIOGRAPHY.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'bib-card';
+    card.innerHTML = `
+      <div class="bib-header">
+        <div class="bib-title">${b.title}</div>
+        <span class="bib-tag">${b.cat}</span>
+      </div>
+      <div class="bib-authors">${b.authors}</div>
+      <div class="bib-journal">${b.journal}</div>
+      <div class="bib-summary">${b.summary}</div>
+    `;
+    bibList.appendChild(card);
+  });
+}
+
 function initAcademy() {
   const list = el('academy-list');
   if (!list) return;
@@ -359,6 +383,28 @@ function initAcademy() {
     card.addEventListener('click', () => openLesson(l));
     list.appendChild(card);
   });
+
+  // Render bibliography
+  renderBibliography();
+
+  // Setup sub-navigation tabs if not already done
+  const btnLessons = el('academy-btn-lessons');
+  const btnBib = el('academy-btn-bib');
+  if (btnLessons && btnBib && !btnLessons.dataset.bound) {
+    btnLessons.dataset.bound = "true";
+    btnLessons.addEventListener('click', () => {
+      btnLessons.classList.add('active');
+      btnBib.classList.remove('active');
+      show('academy-list');
+      hide('bibliography-list');
+    });
+    btnBib.addEventListener('click', () => {
+      btnBib.classList.add('active');
+      btnLessons.classList.remove('active');
+      hide('academy-list');
+      show('bibliography-list');
+    });
+  }
 }
 
 function openLesson(lesson) {
@@ -732,8 +778,13 @@ function endShift() {
   const unlocks = el('debrief-unlocks');
   if (unlocks) {
     unlocks.innerHTML = '';
+    const prevRank = getRank(G.xp - G.score);
     const newRank = getRank(G.xp);
     let notifications = [];
+    
+    if (newRank !== prevRank) {
+      notifications.push(`🏆 <strong>PROMOTED:</strong> You have been promoted to <strong>${newRank}</strong>!`);
+    }
     
     // Check if new stations are unlocked
     Object.keys(STATIONS).forEach(id => {

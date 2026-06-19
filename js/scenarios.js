@@ -24,7 +24,7 @@ export const STATIONS = {
   srinagar: {
     id: "srinagar",
     name: "Srinagar (SXR)",
-    unlockedAt: 300,
+    unlockedAt: 0,
     coord: [34.0837, 74.7973],
     climate: "Subtropical highland climate. Dominated by Western Disturbances bringing snow in winter and moderate rainfall in summer.",
     monsoon: "Lies at the extreme limit of the monsoon. Rainfall is typically light, but moisture intrusion can trigger catastrophic cloudbursts.",
@@ -33,7 +33,7 @@ export const STATIONS = {
   guwahati: {
     id: "guwahati",
     name: "Guwahati (GAU)",
-    unlockedAt: 700,
+    unlockedAt: 0,
     coord: [26.1445, 91.7362],
     climate: "Humid subtropical. Heavy moisture loading due to funnelling between the Himalayas and the Shillong plateau.",
     monsoon: "Heavy pre-monsoon convective bursts starting in April. Monsoon rainfall is sustained and highly active, causing Brahmaputra river overflow.",
@@ -42,7 +42,7 @@ export const STATIONS = {
   kolkata: {
     id: "kolkata",
     name: "Kolkata (CCU)",
-    unlockedAt: 1200,
+    unlockedAt: 0,
     coord: [22.5726, 88.3639],
     climate: "Tropical wet-and-dry. Extremely vulnerable to storm surges, tidal waves, and severe cyclonic storms.",
     monsoon: "Heavy rainfall from Bay of Bengal depressions. Nor'westers (Kalbaishakhi) bring extreme severe convective storms in spring.",
@@ -51,7 +51,7 @@ export const STATIONS = {
   visakhapatnam: {
     id: "visakhapatnam",
     name: "Visakhapatnam (VTZ)",
-    unlockedAt: 1800,
+    unlockedAt: 0,
     coord: [17.6868, 83.2185],
     climate: "Tropical wet-and-dry. Coastline is highly vulnerable to post-monsoon tropical cyclones.",
     monsoon: "Receives moderate rainfall during southwest monsoon. Heavy rainfall during northeast monsoon retreat and cyclonic landfalls.",
@@ -60,7 +60,7 @@ export const STATIONS = {
   chennai: {
     id: "chennai",
     name: "Chennai (MAA)",
-    unlockedAt: 2500,
+    unlockedAt: 0,
     coord: [13.0827, 80.2707],
     climate: "Tropical wet-and-dry. Unique seasonal cycle where rainfall peaks during the winter monsoon (Northeast monsoon).",
     monsoon: "Southwest monsoon is dry (rain shadow). Northeast monsoon (Oct-Dec) brings 60% of annual rainfall via easterly waves and cyclones.",
@@ -69,7 +69,7 @@ export const STATIONS = {
   hyderabad: {
     id: "hyderabad",
     name: "Hyderabad (HYD)",
-    unlockedAt: 3200,
+    unlockedAt: 0,
     coord: [17.3850, 78.4867],
     climate: "Semi-arid climate. Situated on the Deccan plateau, rainfall is generally moderate and patchy.",
     monsoon: "Southwest monsoon brings steady rain. Peak activity occurs during localized convective thunder squalls.",
@@ -78,7 +78,7 @@ export const STATIONS = {
   bengaluru: {
     id: "bengaluru",
     name: "Bengaluru (BLR)",
-    unlockedAt: 4000,
+    unlockedAt: 0,
     coord: [12.9716, 77.5946],
     climate: "Tropical savanna climate. Moderate temperatures due to high altitude (920m).",
     monsoon: "Receives rainfall from both southwest and northeast monsoons. Dominated by evening convective storm cells.",
@@ -87,11 +87,56 @@ export const STATIONS = {
   ahmedabad: {
     id: "ahmedabad",
     name: "Ahmedabad (AMD)",
-    unlockedAt: 5000,
+    unlockedAt: 0,
     coord: [23.0225, 72.5714],
     climate: "Hot semi-arid. High ambient temperatures before monsoon arrival.",
     monsoon: "Short monsoon season (July-September). Very erratic rainfall pattern, susceptible to dry spells or sudden extreme deluges.",
     history: "July 2017 floods when active monsoon conditions caused Sabarmati River flooding and submerged low-lying areas."
+  },
+  cherrapunji: {
+    id: "cherrapunji",
+    name: "Cherrapunji (SHL)",
+    unlockedAt: 0,
+    coord: [25.2702, 91.7325],
+    climate: "Subtropical highland climate. Southern slopes of East Khasi Hills, subject to extreme orographic cloud systems.",
+    monsoon: "Moisture-laden winds funneled from Bengal plains forced up steep slopes, producing extreme seasonal rain totals.",
+    history: "Holds multiple world precipitation records. Widespread landslides and severe runoff downstream."
+  },
+  gadanki: {
+    id: "gadanki",
+    name: "Gadanki (GDN)",
+    unlockedAt: 0,
+    coord: [13.4593, 79.1754],
+    climate: "Semi-arid tropical plateau. National Atmospheric Research Laboratory core instrument and ground validation site.",
+    monsoon: "Receives southwest and northeast monsoon precipitation. Characterized by detailed radar backscatter measurements.",
+    history: "Primary calibration station for GPM/TRMM reflectivity validation and vertical profiling algorithms."
+  },
+  agartala: {
+    id: "agartala",
+    name: "Agartala (AGT)",
+    unlockedAt: 0,
+    coord: [23.8315, 91.2868],
+    climate: "Humid subtropical. Susceptible to violent pre-monsoon thunderstorms and organized linear convective lines.",
+    monsoon: "Active monsoonal flow characterized by low-level moisture convergence and trailing stratiform squalls.",
+    history: "Frequent severe weather events bringing extreme hourly rain rates and damaging wind gusts."
+  },
+  goa: {
+    id: "goa",
+    name: "Goa (GOA)",
+    unlockedAt: 0,
+    coord: [15.4909, 73.8278],
+    climate: "Tropical monsoon climate. Exposed to the core southwest monsoon westerly jet stream.",
+    monsoon: "Strong bimodal diurnal cycle, with convective storm peaks in the afternoon and early morning.",
+    history: "Intense coastal precipitation enhanced by land-sea breeze dynamics and Western Ghats uplift."
+  },
+  bhuj: {
+    id: "bhuj",
+    name: "Bhuj (BHU)",
+    unlockedAt: 0,
+    coord: [23.2504, 69.6693],
+    climate: "Hot arid margins. Low seasonal rainfall, but susceptible to tropical cyclones from the Arabian Sea.",
+    monsoon: "Erratic monsoon with dry-slot mid-level moisture intrusions inhibiting rain, or sudden extreme deluges.",
+    history: "Cyclone Biparjoy (2023) landfall causing massive flooding across the Kutch peninsula."
   }
 };
 
@@ -3748,6 +3793,596 @@ export const DB = {
         }
       ],
       "correctAnswer": "b"
+    },
+    {
+      "id": "a21",
+      "station": "goa",
+      "day": "12 Jul — 16:30 IST",
+      "title": "Afternoon Convective Ridge over Western Ghats",
+      "region": "Western Ghats Ridge (15.2N, 74.2E)",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 205,
+        "btd1": 3.2,
+        "deltaBtd": 4.1,
+        "stormHeight": 14.5,
+        "rainRate": 48,
+        "cape": 2800,
+        "tcwv": 65
+      },
+      "question": "INSAT-3DR shows a vigorous convective core developing over the Western Ghats ridge near Goa. The Doppler radar shows a core crossing 14 km. Cloud-top TB11 has dropped to 205 K, BTD1 is +3.2 K, and CAPE is 2800 J/kg. What is the physical mechanism driving this afternoon peak?",
+      "targetRain": "heavy",
+      "targetAlert": "orange",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "The afternoon convective peak over the Western Ghats ridge is driven by daytime solar heating of the elevated terrain (which acts as a local heat source), combined with orographic uplift forcing the moist coastal westerlies to converge and rise rapidly. This creates local instability (high CAPE) and deep convection.",
+      "hint": "Think about daytime solar heating of mountains vs. nocturnal land breeze convergence.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Orographic forcing combined with strong solar heating of the mountain slopes during the day, which destabilizes the boundary layer and triggers deep convection.",
+          "correct": true,
+          "risk": "RIDGE CONVECTION",
+          "color": "var(--org)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "b",
+          "text": "Cool air drainage (katabatic flow) converging with warm oceanic air over the sea, triggering morning showers.",
+          "correct": false,
+          "risk": "NOCTURNAL LAND BREEZE",
+          "color": "var(--txt3)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "c",
+          "text": "Widespread stratiform rain bands driven by a synoptic depression, which eliminates local diurnal heating signals.",
+          "correct": false,
+          "risk": "SYNOPTIC STRATIFORM",
+          "color": "var(--gold)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "d",
+          "text": "A purely radiative cooling effect at the cloud tops causing thermal instability without surface heating.",
+          "correct": false,
+          "risk": "RADIATIVE COOLING",
+          "color": "var(--txt2)",
+          "tag": "Diurnal Cycle"
+        }
+      ],
+      "correctAnswer": "a"
+    },
+    {
+      "id": "a22",
+      "station": "goa",
+      "day": "13 Jul — 04:30 IST",
+      "title": "Nocturnal Offshore Convection Peak",
+      "region": "Konkan Coast (15.5N, 73.5E)",
+      "mapType": "active_monsoon",
+      "data": {
+        "tb11": 218,
+        "btd1": -12.5,
+        "deltaBtd": 0.8,
+        "stormHeight": 9.2,
+        "rainRate": 15,
+        "cape": 800,
+        "tcwv": 68
+      },
+      "question": "It is 04:30 IST. Coastal Goa shows active convective cells over the ocean and shoreline. TB11 is 218 K, CAPE is relatively low at 800 J/kg, but TCWV is saturated at 68 mm. Doppler radar shows low-level convergence. What is the physical trigger for this early-morning peak?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "convective",
+      "targetHazard": "moderate",
+      "explanation": "The early-morning precipitation peak along the Konkan coast is driven by nocturnal radiative cooling of the land, which generates a cool land breeze. This land breeze drains downslope and converges with the warm, moist monsoon westerlies over the coastal waters, initiating nocturnal offshore convection.",
+      "hint": "Nighttime land cooling vs. warm ocean waters. This creates a low-level boundary line.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Peak solar heating of the ocean surface occurring in the middle of the night.",
+          "correct": false,
+          "risk": "SST WRONG",
+          "color": "var(--txt3)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "b",
+          "text": "Nocturnal land-cooling drainage winds (land breeze) converging with warm, moist large-scale monsoon westerlies near the coast.",
+          "correct": true,
+          "risk": "LAND BREEZE CONVERGENCE",
+          "color": "var(--ac)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "c",
+          "text": "An overshooting convective top from mountain storms drifting backwards under upper-level easterlies.",
+          "correct": false,
+          "risk": "ANVIL DRIFT WRONG",
+          "color": "var(--gold)",
+          "tag": "Diurnal Cycle"
+        },
+        {
+          "id": "d",
+          "text": "Direct orographic lifting of dry continental air masses.",
+          "correct": false,
+          "risk": "DRY LIFTING",
+          "color": "var(--txt2)",
+          "tag": "Diurnal Cycle"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a23",
+      "station": "gadanki",
+      "day": "20 Aug — 11:15 IST",
+      "title": "Melting Layer Detection — Ground Validation",
+      "region": "NARL Gadanki (13.5N, 79.2E)",
+      "mapType": "stratiform",
+      "data": {
+        "tb11": 232,
+        "btd1": -18.2,
+        "deltaBtd": 0.2,
+        "stormHeight": 7.2,
+        "rainRate": 4.2,
+        "cape": 500,
+        "tcwv": 58
+      },
+      "question": "During a stratiform monsoon rain event over Gadanki, NARL's VHF radar and GPM's Ku-band radar detect a sharp horizontal band of enhanced reflectivity (up to 42 dBZ) at 4.8 km altitude (freezing level). Reflectivity falls rapidly below it. What microphysical process causes this 'bright band'?",
+      "targetRain": "light",
+      "targetAlert": "green",
+      "targetClass": "stratiform",
+      "targetHazard": "low",
+      "explanation": "The 'bright band' is a radar signature characteristic of stratiform rain, caused by falling snowflakes that begin to melt as they cross the 0°C freezing level. The melting snowflake gets coated with liquid water, which increases its dielectric constant, making it appear to the radar as a giant raindrop with a very large backscattering cross-section.",
+      "hint": "Snowflakes melting and getting wet look very large to radar waves. This occurs at the 0°C isotherm.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A local increase in precipitation intensity driven by dry air intrusion from the mid-troposphere.",
+          "correct": false,
+          "risk": "INTENSITY SPIKE WRONG",
+          "color": "var(--txt3)",
+          "tag": "Radar Signature"
+        },
+        {
+          "id": "b",
+          "text": "Falling snowflakes melting and coating themselves in liquid water at the 0°C level, which increases their dielectric reflectivity.",
+          "correct": true,
+          "risk": "BRIGHT BAND DETECTED",
+          "color": "var(--grn)",
+          "tag": "Radar Signature"
+        },
+        {
+          "id": "c",
+          "text": "The freezing of liquid water droplets as updrafts sweep them above the tropopause.",
+          "correct": false,
+          "risk": "FREEZING CONVECTIVE",
+          "color": "var(--gold)",
+          "tag": "Radar Signature"
+        },
+        {
+          "id": "d",
+          "text": "Radar signal attenuation by heavy convective water loading aloft.",
+          "correct": false,
+          "risk": "ATTENUATION ERROR",
+          "color": "var(--red)",
+          "tag": "Radar Signature"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a24",
+      "station": "gadanki",
+      "day": "21 Aug — 14:00 IST",
+      "title": "Spatio-Temporal Collocation Constraints",
+      "region": "Satellite Collocation Orbit",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 248,
+        "btd1": -22,
+        "deltaBtd": -1.2,
+        "stormHeight": 5.5,
+        "rainRate": 8.5,
+        "cape": 1200,
+        "tcwv": 60
+      },
+      "question": "You are collocating INSAT-3DR Imager pixels (4x4 km grid) with GPM DPR Ku-band swath scans (5x5 km swath). To build a machine learning dataset, you must apply strict spatio-temporal thresholds. According to validation studies, what are the standard threshold bounds for spatial distance and temporal difference?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "stratiform",
+      "targetHazard": "moderate",
+      "explanation": "To match geostationary (INSAT) and low-Earth orbit (GPM) observations without introducing large errors from convective cloud movement, collocations are constrained to a spatial distance threshold of <= 5 km (typically using cKDTree nearest-neighbor search) and a temporal difference threshold of <= 10 minutes.",
+      "hint": "Collocation must be tight. Clouds move fast. Find the spatial limit in km and temporal limit in minutes.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Spatial separation of <= 50 km and temporal difference of <= 2 hours.",
+          "correct": false,
+          "risk": "LOOSE BOUNDS WRONG",
+          "color": "var(--red)",
+          "tag": "Collocation Specs"
+        },
+        {
+          "id": "b",
+          "text": "Spatial separation of <= 5 km and temporal difference of <= 10 minutes, using cKDTree to prevent grid mismatches.",
+          "correct": true,
+          "risk": "COLLOCATION MATCHED",
+          "color": "var(--ac)",
+          "tag": "Collocation Specs"
+        },
+        {
+          "id": "c",
+          "text": "No spatial limits, matching purely based on the closest calendar day.",
+          "correct": false,
+          "risk": "DAILY MATCH WRONG",
+          "color": "var(--txt3)",
+          "tag": "Collocation Specs"
+        },
+        {
+          "id": "d",
+          "text": "Temporal threshold of exactly 90 minutes to match the orbital period of the satellite.",
+          "correct": false,
+          "risk": "ORBITAL INTERVAL WRONG",
+          "color": "var(--gold)",
+          "tag": "Collocation Specs"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a25",
+      "station": "cherrapunji",
+      "day": "05 Jun — 09:30 IST",
+      "title": "Shallow Orographic Rain over Khasi Hills",
+      "region": "Mawsynram / Cherrapunji (25.3N, 91.7E)",
+      "mapType": "orographic",
+      "data": {
+        "tb11": 270,
+        "btd1": -8.5,
+        "deltaBtd": -0.4,
+        "stormHeight": 3.5,
+        "rainRate": 12,
+        "cape": 300,
+        "tcwv": 66
+      },
+      "question": "A heavy, steady rain is falling over Cherrapunji. The satellite shows a relatively warm cloud top (TB11 is 268 K), which is well above the freezing level (~5 km). BTD1 is negative, and CAPE is very low (300 J/kg), but moisture is saturated (66 mm). What type of precipitation process is dominating this system?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "shallow_warm",
+      "targetHazard": "moderate",
+      "explanation": "This is a classic warm-rain orographic cloud. Stable thermodynamics (low CAPE) combined with persistent lifting up the steep Khasi slopes causes steady condensation. The rain forms entirely below the freezing level via collision-coalescence without ice-phase physics, yet can produce huge daily totals due to continuous topographical funneling.",
+      "hint": "Warm cloud tops (>260 K) + low CAPE + high moisture = warm orographic rain. Coalescence is key.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Deep ice-phase convection driven by tropopause-penetrating cumulonimbus clouds.",
+          "correct": false,
+          "risk": "DEEP CONVECTIVE WRONG",
+          "color": "var(--red)",
+          "tag": "Orographic Rain"
+        },
+        {
+          "id": "b",
+          "text": "Shallow warm rain driven by collision-coalescence processes in liquid-phase clouds forced topographically up the Khasi slopes.",
+          "correct": true,
+          "risk": "WARM RAIN DETECTED",
+          "color": "var(--grn)",
+          "tag": "Orographic Rain"
+        },
+        {
+          "id": "c",
+          "text": "Bergeron-Findeisen ice crystal growth in detached thin cirrus.",
+          "correct": false,
+          "risk": "CIRRUS MELTING WRONG",
+          "color": "var(--txt3)",
+          "tag": "Orographic Rain"
+        },
+        {
+          "id": "d",
+          "text": "Dry convective squalls triggered by desert air mass intrusions.",
+          "correct": false,
+          "risk": "DRY CONVECTIVE WRONG",
+          "color": "var(--gold)",
+          "tag": "Orographic Rain"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a26",
+      "station": "cherrapunji",
+      "day": "06 Jun — 14:30 IST",
+      "title": "Transition to Deep Terrain-Forced Convection",
+      "region": "Khasi Hills foothills (25.1N, 91.8E)",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 198,
+        "btd1": 5.2,
+        "deltaBtd": 4.8,
+        "stormHeight": 16.2,
+        "rainRate": 78,
+        "cape": 3500,
+        "tcwv": 70
+      },
+      "question": "It is afternoon. Strong solar heating over the plains of Bangladesh has built extreme instability (CAPE 3500 J/kg). Moist winds are forced up the steep Khasi slopes, causing cloud tops to shoot to 16.2 km. Cloud-top TB11 drops to 198 K, and BTD1 climbs to +5.2 K. What warning do you issue?",
+      "targetRain": "heavy",
+      "targetAlert": "red",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "This is a transition from shallow warm rain to intense deep convection. The massive CAPE and steep orographic lift trigger rapid convective growth, creating overshooting tops that pierce the tropopause (16.2 km height, 198 K). The highly positive BTD1 (+5.2 K) confirms massive ice crystal loading in the anvil. A Red Alert is necessary for sudden flash floods and severe downpours.",
+      "hint": "Heights above 15 km and TB11 under 200 K are extreme. Instability is massive. Issue maximum warnings.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Green Alert — warm stratiform drizzle with low localized flood risk.",
+          "correct": false,
+          "risk": "UNDER-WARNING",
+          "color": "var(--grn)",
+          "tag": "Severe Convection"
+        },
+        {
+          "id": "b",
+          "text": "Red Alert — deep convective cells forced by extreme instability and orography, bringing severe flash floods and downpours.",
+          "correct": true,
+          "risk": "RED ALERT ISSUED",
+          "color": "var(--red)",
+          "tag": "Severe Convection"
+        },
+        {
+          "id": "c",
+          "text": "Yellow Alert — thin cirrus layer with zero surface rainfall probability.",
+          "correct": false,
+          "risk": "CIRRUS FALSE ALARM",
+          "color": "var(--gold)",
+          "tag": "Severe Convection"
+        },
+        {
+          "id": "d",
+          "text": "Orange Alert — shallow warm rain without lightning or gusty wind threat.",
+          "correct": false,
+          "risk": "WRONG MICROPHYSICS",
+          "color": "var(--txt2)",
+          "tag": "Severe Convection"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a27",
+      "station": "agartala",
+      "day": "18 May — 15:30 IST",
+      "title": "Linear MCS Mode — Trailing Stratiform",
+      "region": "Tripura Plains (23.8N, 91.3E)",
+      "mapType": "stratiform",
+      "data": {
+        "tb11": 215,
+        "btd1": 1.8,
+        "deltaBtd": 2.2,
+        "stormHeight": 11.2,
+        "rainRate": 35,
+        "cape": 2200,
+        "tcwv": 62
+      },
+      "question": "During the pre-monsoon season over Agartala, a Mesoscale Convective System (MCS) has organized. Doppler radar shows a leading convective line of active cells (reflectivity > 45 dBZ) backed by a broad region of uniform, lighter reflectivity (~28 dBZ) with a distinct bright band. What linear MCS mode is this?",
+      "targetRain": "heavy",
+      "targetAlert": "orange",
+      "targetClass": "convective",
+      "targetHazard": "high",
+      "explanation": "This describes a Trailing Stratiform (TS) linear MCS, which is the most common organizational mode in the Indian subcontinent. It consists of a narrow convective leading edge that produces intense rain, followed by a broad stratiform trailing region where hydrometeors blow backwards and melt, producing lighter, steady rain and a clear radar bright band.",
+      "hint": "Leading sharp convective line + broad trailing lighter rain area = Trailing Stratiform.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Bow Echo (BE) mode, characterized by a curved convective line and strong rear-inflow wind jets.",
+          "correct": false,
+          "risk": "BOW ECHO WRONG",
+          "color": "var(--red)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "b",
+          "text": "Trailing Stratiform (TS) linear MCS mode, with a leading convective storm line followed by a broad melting stratiform shield.",
+          "correct": true,
+          "risk": "TRAILING STRATIFORM",
+          "color": "var(--org)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "c",
+          "text": "No-Stratiform (NS) mode, consisting only of isolated convective cells with zero anvil development.",
+          "correct": false,
+          "risk": "NO STRATIFORM WRONG",
+          "color": "var(--txt3)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "d",
+          "text": "Parallel Stratiform (PS) mode, where the stratiform region is aligned side-by-side with the convective line.",
+          "correct": false,
+          "risk": "PARALLEL WRONG",
+          "color": "var(--gold)",
+          "tag": "MCS Organization"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a28",
+      "station": "agartala",
+      "day": "19 May — 17:00 IST",
+      "title": "Severe Squall — Bow Echo Linear MCS",
+      "region": "Tripura-Bangladesh Border",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 196,
+        "btd1": 4.8,
+        "deltaBtd": 5.2,
+        "stormHeight": 15.8,
+        "rainRate": 92,
+        "cape": 3200,
+        "tcwv": 64
+      },
+      "question": "Doppler radar at Agartala detects a convective line that has bent forward into a crescent shape. Radar reflectivity peaks at 55 dBZ, and wind sensors report gusts exceeding 100 km/h. Satellite TB11 is extremely cold (196 K), with storm height at 15.8 km. What severe linear MCS mode is this?",
+      "targetRain": "heavy",
+      "targetAlert": "red",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "This is a Bow Echo (BE) linear MCS mode. Bow echoes form when a strong downdraft of cold air (the rear-inflow jet) pushes the center of the convective line forward, bending it into a bow shape. It is a signature of severe wind squalls, microbursts, and extreme hourly rainfall rates.",
+      "hint": "Convective line bent forward like a bow + extreme wind gusts + very high reflectivity.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Embedded Line (EL) mode, representing a weak convective line buried inside a stratiform shield.",
+          "correct": false,
+          "risk": "EMBEDDED LINE WRONG",
+          "color": "var(--txt3)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "b",
+          "text": "Bow Echo (BE) linear MCS mode, driven by a strong rear-inflow jet causing severe wind squalls and intense precipitation.",
+          "correct": true,
+          "risk": "BOW ECHO DETECTED",
+          "color": "var(--red)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "c",
+          "text": "Trailing Stratiform (TS) mode in its decaying stage.",
+          "correct": false,
+          "risk": "DECAYING TS WRONG",
+          "color": "var(--gold)",
+          "tag": "MCS Organization"
+        },
+        {
+          "id": "d",
+          "text": "Shallow warm convective ridge without convective downdrafts.",
+          "correct": false,
+          "risk": "SHALLOW CLOUD WRONG",
+          "color": "var(--txt2)",
+          "tag": "MCS Organization"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a29",
+      "station": "bhuj",
+      "day": "18 Aug — 14:00 IST",
+      "title": "Mid-Level Dry Slot Intrusion during Monsoon Break",
+      "region": "Kutch / Gujarat (23.2N, 69.7E)",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 262,
+        "btd1": -19.5,
+        "deltaBtd": -8.5,
+        "stormHeight": 4.8,
+        "rainRate": 0,
+        "cape": 1800,
+        "tcwv": 35
+      },
+      "question": "During a monsoon 'break' phase over Bhuj, INSAT-3DR WV channel (6.2μm) shows a dark, warm band indicating dry air. Ground-based GPS shows TCWV has plunged to 35 mm. Although surface CAPE is high (1800 J/kg) due to daytime heating, no storms develop. What is the physical cause of this suppression?",
+      "targetRain": "none",
+      "targetAlert": "green",
+      "targetClass": "cirrus",
+      "targetHazard": "low",
+      "explanation": "This is a dry slot intrusion typical of monsoon break spells. Mid-level dry air (indicated by the warm WV temperature and low TCWV of 35 mm) entrains into any rising air parcels, evaporating them and suppressing convective growth. The dry air acts as a thermodynamic cap, preventing CAPE from releasing.",
+      "hint": "CAPE needs moisture to trigger storms. Mid-level dry air evaporates rising clouds before they grow.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A complete lack of surface heating, keeping the boundary layer cold.",
+          "correct": false,
+          "risk": "SST ERROR WRONG",
+          "color": "var(--txt3)",
+          "tag": "Monsoon Break"
+        },
+        {
+          "id": "b",
+          "text": "Mid-level dry slot intrusion (dry air entrainment) that suppresses convective updrafts through evaporative cooling and capping.",
+          "correct": true,
+          "risk": "DRY SLOT CAPPING",
+          "color": "var(--grn)",
+          "tag": "Monsoon Break"
+        },
+        {
+          "id": "c",
+          "text": "A local increase in high-altitude wind shear blowing the storm tops away.",
+          "correct": false,
+          "risk": "SHEAR WRONG",
+          "color": "var(--gold)",
+          "tag": "Monsoon Break"
+        },
+        {
+          "id": "d",
+          "text": "Over-saturation of the boundary layer causing warm rain suppression.",
+          "correct": false,
+          "risk": "SATURATION SUPPRESS",
+          "color": "var(--red)",
+          "tag": "Monsoon Break"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "a30",
+      "station": "bhuj",
+      "day": "14 Jun — 18:00 IST",
+      "title": "Cyclone Biparjoy Landfall Warning",
+      "region": "Kutch Coastline (22.9N, 68.5E)",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 195,
+        "btd1": 5.8,
+        "deltaBtd": 6.2,
+        "stormHeight": 16.5,
+        "rainRate": 85,
+        "cape": 3400,
+        "tcwv": 72
+      },
+      "question": "Cyclone Biparjoy is making landfall on the Kutch coast near Naliya. INSAT-3DR TIR1 has plummeted to 195 K (overshooting tops at 16.5 km). Delta BTD is +6.2 K, and TCWV is extremely high at 72 mm. Ground wind stations report 125 km/h. What alert level do you issue?",
+      "targetRain": "heavy",
+      "targetAlert": "red",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "With the eye-wall of Cyclone Biparjoy making landfall, the combination of tropopause-penetrating storm heights (16.5 km), extreme moisture loading (72 mm), and destructive winds requires an immediate Red Alert (highest warning level) to trigger storm surge evacuations and flood protocols.",
+      "hint": "Landfall of a severe cyclonic storm requires the maximum warning alert.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Orange Alert — warning coastal shipping only, as inland areas are safe.",
+          "correct": false,
+          "risk": "UNDER-WARNING",
+          "color": "var(--org)",
+          "tag": "Cyclone Landfall"
+        },
+        {
+          "id": "b",
+          "text": "Red Alert — extreme hazard warning for storm surge, high winds, and severe flooding, matching the severe cyclonic landfall.",
+          "correct": true,
+          "risk": "RED ALERT ACTIVATED",
+          "color": "var(--red)",
+          "tag": "Cyclone Landfall"
+        },
+        {
+          "id": "c",
+          "text": "Yellow Alert — watch advisory as storm is expected to dissipate rapidly over the desert sands.",
+          "correct": false,
+          "risk": "DELAYED WARNING",
+          "color": "var(--gold)",
+          "tag": "Cyclone Landfall"
+        },
+        {
+          "id": "d",
+          "text": "Green Alert — clear conditions with light coastal drizzle.",
+          "correct": false,
+          "risk": "FALSE STATUS",
+          "color": "var(--grn)",
+          "tag": "Cyclone Landfall"
+        }
+      ],
+      "correctAnswer": "b"
     }
   ],
   "master": [
@@ -4927,6 +5562,596 @@ export const DB = {
           "risk": "PHASE ONLY WRONG",
           "color": "var(--txt2)",
           "tag": "Cross-System BTD"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m21",
+      "station": "goa",
+      "day": "14 Jul — 02:00 IST",
+      "title": "Eastward-Propagating Nocturnal Precipitation Peaks",
+      "region": "Leeward Side of Western Ghats (9.5N, 78.2E)",
+      "mapType": "active_monsoon",
+      "data": {
+        "tb11": 220,
+        "btd1": -4.5,
+        "deltaBtd": 1.2,
+        "stormHeight": 8.5,
+        "rainRate": 18,
+        "cape": 900,
+        "tcwv": 65
+      },
+      "question": "During the summer monsoon, TRMM/GPM observations show a nocturnal rain peak near the southeast coast of India that propagates eastward offshore into the Bay of Bengal at 18-20 m/s. According to climatology papers, what physical factors drive this offshore propagation?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "convective",
+      "targetHazard": "moderate",
+      "explanation": "This nocturnal coastal peak and its subsequent offshore propagation are driven by the convergence of the intensified monsoon low-level westerly winds along the land-sea boundary during the night, combined with the eastward propagation of gravity waves generated by afternoon mountain convection.",
+      "hint": "Monsoon low-level westerlies and gravity waves propagate the peak offshore.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "The Coriolis force deflecting local sea breezes in a clockwise loop.",
+          "correct": false,
+          "risk": "CORIOLIS ERROR WRONG",
+          "color": "var(--txt3)",
+          "tag": "Nocturnal Peak"
+        },
+        {
+          "id": "b",
+          "text": "The convergence of low-level westerly winds at the coastal boundary overnight, combined with the propagation of gravity waves generated by daytime mountain storms.",
+          "correct": true,
+          "risk": "GRAVITY WAVE MODULATION",
+          "color": "var(--ac)",
+          "tag": "Nocturnal Peak"
+        },
+        {
+          "id": "c",
+          "text": "Cyclonic vortex formation over the Deccan plateau moving east under high-altitude westerly winds.",
+          "correct": false,
+          "risk": "VORTEX WRONG",
+          "color": "var(--gold)",
+          "tag": "Nocturnal Peak"
+        },
+        {
+          "id": "d",
+          "text": "A diurnal shift in the jet stream position from south to north.",
+          "correct": false,
+          "risk": "JET STREAM WRONG",
+          "color": "var(--txt2)",
+          "tag": "Nocturnal Peak"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m22",
+      "station": "gadanki",
+      "day": "22 Aug — 10:00 IST",
+      "title": "Active vs. Break Spell Reflectivity Structure",
+      "region": "Core Monsoon Zone (21.5N, 80.2E)",
+      "mapType": "stratiform",
+      "data": {
+        "tb11": 224,
+        "btd1": -14.2,
+        "deltaBtd": 1.5,
+        "stormHeight": 8.8,
+        "rainRate": 8,
+        "cape": 600,
+        "tcwv": 65
+      },
+      "question": "Analyzing 15 years of TRMM PR profiles, researchers identified marked differences in vertical structures between active and break spells. Which vertical profile structure is characteristic of an ACTIVE monsoon spell over the core zone?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "stratiform",
+      "targetHazard": "moderate",
+      "explanation": "Active spells are characterized by a high fraction of stratiform rain, widespread MCS shields, and a clear reflectivity melting layer bright band. The storm-top heights are moderately tall but very widespread. Break spells, on the other hand, feature shallow rain profiles or isolated, high-reflectivity convective towers driven by higher CAPE.",
+      "hint": "Active spells = widespread stratiform rain with bright bands. Break spells = shallow rain or convective towers.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "High frequency of shallow warm-rain cells below 4 km with zero ice-phase reflectivity.",
+          "correct": false,
+          "risk": "SHALLOW ONLY WRONG",
+          "color": "var(--txt3)",
+          "tag": "Monsoon Spells"
+        },
+        {
+          "id": "b",
+          "text": "Prevalence of organized Mesoscale Convective Systems (MCS) with a large stratiform fraction, yielding widespread melting layer bright bands.",
+          "correct": true,
+          "risk": "ACTIVE STRATIFORM SHIELD",
+          "color": "var(--ac)",
+          "tag": "Monsoon Spells"
+        },
+        {
+          "id": "c",
+          "text": "A complete absence of radar echoes due to total atmospheric subsidence.",
+          "correct": false,
+          "risk": "NO ECHOES WRONG",
+          "color": "var(--red)",
+          "tag": "Monsoon Spells"
+        },
+        {
+          "id": "d",
+          "text": "Isolated, extremely tall convective cells exceeding 16 km with no stratiform rain.",
+          "correct": false,
+          "risk": "ISOLATED CONVECTIVE WRONG",
+          "color": "var(--gold)",
+          "tag": "Monsoon Spells"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m23",
+      "station": "gadanki",
+      "day": "23 Aug — 13:30 IST",
+      "title": "GPM DPR Level-2 Swath Data Structure",
+      "region": "NARL Gadanki",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 250,
+        "btd1": -18,
+        "deltaBtd": -0.5,
+        "stormHeight": 6,
+        "rainRate": 3.5,
+        "cape": 400,
+        "tcwv": 55
+      },
+      "question": "You are analyzing GPM DPR Level-2 Ku-band swath data (product 2AKu). The data array contains range bins along the radar beam. According to GPM specifications, what is the number of range bins, their vertical spacing, and where is bin index 0 located?",
+      "targetRain": "light",
+      "targetAlert": "green",
+      "targetClass": "stratiform",
+      "targetHazard": "low",
+      "explanation": "GPM DPR Ku-band Level-2 products (2AKu) contain 176 range bins along each scan ray, with a vertical range bin interval of 125 meters. Bin index 0 is located at the top of the scan (highest altitude, ~22 km), and bin index 175 corresponds to the Earth ellipsoid surface.",
+      "hint": "176 bins, 125m spacing, 0 at top.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "100 bins, 500m vertical interval, with bin 0 at the ground.",
+          "correct": false,
+          "risk": "GROUND ZERO WRONG",
+          "color": "var(--txt3)",
+          "tag": "GPM Specifications"
+        },
+        {
+          "id": "b",
+          "text": "176 range bins, 125m vertical interval, with bin 0 representing the top of the scan window and bin 175 at the Earth ellipsoid.",
+          "correct": true,
+          "risk": "GPM SWATH VALID",
+          "color": "var(--grn)",
+          "tag": "GPM Specifications"
+        },
+        {
+          "id": "c",
+          "text": "2048 bins, 10m spacing, with bin 0 at the satellite orbit altitude.",
+          "correct": false,
+          "risk": "ORBITAL ZERO WRONG",
+          "color": "var(--red)",
+          "tag": "GPM Specifications"
+        },
+        {
+          "id": "d",
+          "text": "50 bins matching Himawari-8 thermal bands.",
+          "correct": false,
+          "risk": "BAND MATCH WRONG",
+          "color": "var(--gold)",
+          "tag": "GPM Specifications"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m24",
+      "station": "cherrapunji",
+      "day": "10 Jun — 08:30 IST",
+      "title": "Microphysical DSD Evolution in Shallow Clouds",
+      "region": "Khasi Hills slopes",
+      "mapType": "orographic",
+      "data": {
+        "tb11": 270,
+        "btd1": -4.8,
+        "deltaBtd": -1.8,
+        "stormHeight": 3.2,
+        "rainRate": 15,
+        "cape": 200,
+        "tcwv": 65
+      },
+      "question": "GPM DPR drop size distribution (DSD) studies show that the liquid-phase region of shallow clouds behaves differently than deep storms. Below 3 km altitude, which microphysical process is dominant in the shallow, warm orographic clouds of the Western Ghats and Khasi Hills?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "shallow_warm",
+      "targetHazard": "moderate",
+      "explanation": "In shallow, warm orographic clouds, GPM DPR DSD analysis shows that the collision-coalescence process is highly dominant below 3 km. Raindrops collide and merge as they fall, leading to an increase in rain rate and droplet size closer to the surface, without any ice-phase melting processes.",
+      "hint": "Warm clouds have no ice. Droplets must collide and coalesce to grow as they fall.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ice crystal aggregation and sublimation in the dry air flow.",
+          "correct": false,
+          "risk": "SUBLIMATION WRONG",
+          "color": "var(--txt3)",
+          "tag": "Microphysics"
+        },
+        {
+          "id": "b",
+          "text": "Collision-coalescence of liquid droplets, which increases raindrop concentration and size closer to the surface.",
+          "correct": true,
+          "risk": "COALESCENCE DOMINANT",
+          "color": "var(--ac)",
+          "tag": "Microphysics"
+        },
+        {
+          "id": "c",
+          "text": "Bergeron-Findeisen crystal melting at the freezing level, which creates a bright band signature.",
+          "correct": false,
+          "risk": "MELTING WRONG",
+          "color": "var(--gold)",
+          "tag": "Microphysics"
+        },
+        {
+          "id": "d",
+          "text": "Heavy evaporative breakup causing a decrease in raindrop size at the surface.",
+          "correct": false,
+          "risk": "EVAPORATION WRONG",
+          "color": "var(--red)",
+          "tag": "Microphysics"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m25",
+      "station": "agartala",
+      "day": "20 May — 16:30 IST",
+      "title": "MCS Linear Modes — Convective Environment",
+      "region": "Northeast India Plains (24.2N, 91.5E)",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 201,
+        "btd1": 3.5,
+        "deltaBtd": 3.8,
+        "stormHeight": 14.8,
+        "rainRate": 52,
+        "cape": 2600,
+        "tcwv": 60
+      },
+      "question": "You are analyzing the environmental composites of linear MCS modes in Northeast India. Comparing Trailing Stratiform (TS) and Bow Echo (BE) modes to Embedded Line (EL) systems, what typical differences in CAPE, TCWV, and low-level wind shear are observed?",
+      "targetRain": "heavy",
+      "targetAlert": "orange",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "Severe linear MCS modes like Bow Echoes (BE) and Trailing Stratiform (TS) develop in environments with significantly higher CAPE (typically > 2000 J/kg), deep moisture (TCWV > 55 mm), and strong low-to-mid level vertical wind shear. Embedded Line (EL) modes, by contrast, occur in weaker wind shear and lower instability.",
+      "hint": "Bow Echoes need strong wind shear and high CAPE. Embedded Lines are weaker.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Bow Echoes require zero vertical wind shear, relying entirely on radiative cooling.",
+          "correct": false,
+          "risk": "SHEAR ERROR WRONG",
+          "color": "var(--txt3)",
+          "tag": "MCS Environment"
+        },
+        {
+          "id": "b",
+          "text": "TS and BE modes require higher CAPE and stronger low-level wind shear to maintain their organized convective structures, while EL modes occur in weaker shear.",
+          "correct": true,
+          "risk": "SHEAR-INSTABILITY BALANCE",
+          "color": "var(--ac)",
+          "tag": "MCS Environment"
+        },
+        {
+          "id": "c",
+          "text": "All linear MCS modes require identical, weak wind shear profiles.",
+          "correct": false,
+          "risk": "IDENTICAL ENV WRONG",
+          "color": "var(--gold)",
+          "tag": "MCS Environment"
+        },
+        {
+          "id": "d",
+          "text": "Dry air columns (TCWV < 20 mm) are necessary to trigger Bow Echoes.",
+          "correct": false,
+          "risk": "DRY ENVIRONMENT WRONG",
+          "color": "var(--red)",
+          "tag": "MCS Environment"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m26",
+      "station": "bhuj",
+      "day": "19 Aug — 15:30 IST",
+      "title": "Clausius-Clapeyron Moisture Scaling with Warming",
+      "region": "Arid margins (23.5N, 70.0E)",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 202,
+        "btd1": 3.2,
+        "deltaBtd": 3.5,
+        "stormHeight": 15,
+        "rainRate": 65,
+        "cape": 3200,
+        "tcwv": 62
+      },
+      "question": "Climate models show a Homogeneous delay in the diurnal peak of rainfall over central India, and an increase in extreme rainfall events. According to physical meteorology, what is the thermodynamic scaling rate of atmospheric water vapor capacity per Kelvin of warming?",
+      "targetRain": "heavy",
+      "targetAlert": "orange",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "According to the Clausius-Clapeyron relation, the water vapor holding capacity of the atmosphere increases by approximately 7% per 1 Kelvin of warming. This increased moisture capacity (TCWV) supplies more latent heat during condensation, driving more intense, localized convective bursts.",
+      "hint": "Look for the standard Clausius-Clapeyron percentage scaling rate per Kelvin.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "1% per Kelvin warming, which is too small to affect storm dynamics.",
+          "correct": false,
+          "risk": "UNDER-SCALING WRONG",
+          "color": "var(--txt3)",
+          "tag": "Climate Change"
+        },
+        {
+          "id": "b",
+          "text": "Approximately 7% per 1 Kelvin of warming, following the Clausius-Clapeyron thermodynamic scaling of saturation vapor pressure.",
+          "correct": true,
+          "risk": "THERMODYNAMIC SCALING",
+          "color": "var(--ac)",
+          "tag": "Climate Change"
+        },
+        {
+          "id": "c",
+          "text": "25% per Kelvin warming, representing an exponential runaway effect.",
+          "correct": false,
+          "risk": "OVER-SCALING WRONG",
+          "color": "var(--red)",
+          "tag": "Climate Change"
+        },
+        {
+          "id": "d",
+          "text": "0% scaling, as water vapor is unaffected by air temperature.",
+          "correct": false,
+          "risk": "ZERO SCALING WRONG",
+          "color": "var(--gold)",
+          "tag": "Climate Change"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m27",
+      "station": "bengaluru",
+      "day": "08 Sep — 14:00 IST",
+      "title": "Feature Engineering for Precipitation Classifiers",
+      "region": "Machine Learning Lab",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 225,
+        "btd1": 1.2,
+        "deltaBtd": 1.5,
+        "stormHeight": 8.5,
+        "rainRate": 12,
+        "cape": 1400,
+        "tcwv": 58
+      },
+      "question": "You are designing a machine learning precipitation type classifier (BRF) using geostationary satellite inputs. You expand your model from 4 basic channels (TIR1, TIR2, WV, MIR) to 34 features. What new features are included in this 34-feature set to capture cloud structure?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "convective",
+      "targetHazard": "moderate",
+      "explanation": "The 34-feature set expands the 4 basic bands by adding 20 local statistical features (mean, median, standard deviation, minimum, and maximum calculated over 3x3 and 5x5 pixel neighborhoods to capture spatial texture), plus 6 Brightness Temperature Differences (BTD), and 4 differences of BTD (DBTD) to capture cloud microphysics.",
+      "hint": "4 basic channels + 20 local statistical textures + 6 BTDs + 4 DBTDs = 34 features.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Only visible albedo and ground temperature readings.",
+          "correct": false,
+          "risk": "VIS ONLY WRONG",
+          "color": "var(--txt3)",
+          "tag": "ML Feature Set"
+        },
+        {
+          "id": "b",
+          "text": "The 4 basic channels, plus 20 statistical neighborhood features (mean, median, SD, min, max), 6 BTDs, and 4 DBTDs.",
+          "correct": true,
+          "risk": "34-FEATURE EXPANSION",
+          "color": "var(--ac)",
+          "tag": "ML Feature Set"
+        },
+        {
+          "id": "c",
+          "text": "30 different wind speed variables from reanalysis models.",
+          "correct": false,
+          "risk": "WIND ONLY WRONG",
+          "color": "var(--gold)",
+          "tag": "ML Feature Set"
+        },
+        {
+          "id": "d",
+          "text": "34 independent satellite orbits spaced chronologically.",
+          "correct": false,
+          "risk": "ORBITS ONLY WRONG",
+          "color": "var(--red)",
+          "tag": "ML Feature Set"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m28",
+      "station": "chennai",
+      "day": "28 Nov — 10:30 IST",
+      "title": "Class Imbalance in Satellite Rain Retrievals",
+      "region": "Machine Learning Lab",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 228,
+        "btd1": -12.2,
+        "deltaBtd": 1.2,
+        "stormHeight": 8,
+        "rainRate": 15,
+        "cape": 1200,
+        "tcwv": 62
+      },
+      "question": "In satellite precipitation type datasets (e.g. collocated INSAT and GPM), over 90% of the pixels represent 'No Rain' conditions. Standard Random Forest models suffer from severe majority-class bias. How does Balanced Random Forest (BRF) address this class imbalance?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "convective",
+      "targetHazard": "moderate",
+      "explanation": "Balanced Random Forest (BRF) addresses severe class imbalance by undersampling the majority class (No Rain) in the bootstrap sample of each individual decision tree. This ensures each tree is trained on a balanced subset of classes, preventing the ensemble from biasing towards the dominant non-raining pixels.",
+      "hint": "BRF balances class distribution by drawing undersampled boot-strapped samples for each tree.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "It deletes all 'No Rain' data from the entire database permanently.",
+          "correct": false,
+          "risk": "DELETION ERROR WRONG",
+          "color": "var(--red)",
+          "tag": "Imbalance Handling"
+        },
+        {
+          "id": "b",
+          "text": "It undersamples the majority class (No Rain) during the bootstrap process for each decision tree to train on a balanced sample.",
+          "correct": true,
+          "risk": "BRF UNDERSAMPLING",
+          "color": "var(--ac)",
+          "tag": "Imbalance Handling"
+        },
+        {
+          "id": "c",
+          "text": "It applies a simple threshold filter, ignoring any pixel warmer than 240 K.",
+          "correct": false,
+          "risk": "THRESHOLDING WRONG",
+          "color": "var(--gold)",
+          "tag": "Imbalance Handling"
+        },
+        {
+          "id": "d",
+          "text": "It replicates convective pixels 1000 times to inflate the training dataset.",
+          "correct": false,
+          "risk": "OVERFITTING WRONG",
+          "color": "var(--txt2)",
+          "tag": "Imbalance Handling"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m29",
+      "station": "mumbai",
+      "day": "18 Jul — 14:00 IST",
+      "title": "U-Net Semantic Segmentation Patch Generation",
+      "region": "Deep Learning Lab",
+      "mapType": "geo_diag",
+      "data": {
+        "tb11": 221,
+        "btd1": -15.5,
+        "deltaBtd": 0.8,
+        "stormHeight": 8.6,
+        "rainRate": 22,
+        "cape": 1600,
+        "tcwv": 64
+      },
+      "question": "For training U-Net deep learning models on geostationary imagery, we generate swath-centered patches. What is the standard patch size, the input dimensions, and why are skip connections used in the U-Net architecture?",
+      "targetRain": "moderate",
+      "targetAlert": "yellow",
+      "targetClass": "convective",
+      "targetHazard": "moderate",
+      "explanation": "U-Net models are trained on 128x128 pixel patches, with inputs containing 4 bands (or 34 features) of brightness temperatures. The architecture uses skip connections from the contracting encoder path directly to the expanding decoder path to preserve high-resolution spatial details and fine cloud boundary boundaries.",
+      "hint": "128x128 patches. Skip connections copy features from encoder to decoder to keep boundaries sharp.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "1x1 patches, and skip connections are omitted to save memory.",
+          "correct": false,
+          "risk": "NO PATCH WRONG",
+          "color": "var(--txt3)",
+          "tag": "Deep Learning Specs"
+        },
+        {
+          "id": "b",
+          "text": "128x128 patches, using skip connections to pass high-resolution spatial details directly from encoder blocks to decoder blocks.",
+          "correct": true,
+          "risk": "U-NET BOUNDARIES VALID",
+          "color": "var(--grn)",
+          "tag": "Deep Learning Specs"
+        },
+        {
+          "id": "c",
+          "text": "1000x1000 patches, using skip connections to jump between different satellite orbits.",
+          "correct": false,
+          "risk": "LARGE PATCH WRONG",
+          "color": "var(--gold)",
+          "tag": "Deep Learning Specs"
+        },
+        {
+          "id": "d",
+          "text": "Fully connected dense layers with zero spatial patch structure.",
+          "correct": false,
+          "risk": "DENSE LAYER WRONG",
+          "color": "var(--red)",
+          "tag": "Deep Learning Specs"
+        }
+      ],
+      "correctAnswer": "b"
+    },
+    {
+      "id": "m30",
+      "station": "kolkata",
+      "day": "04 May — 15:30 IST",
+      "title": "Radar Reflectivity and Latent Heating Profiles",
+      "region": "NARL Research Orbit",
+      "mapType": "convective_burst",
+      "data": {
+        "tb11": 198,
+        "btd1": 5.5,
+        "deltaBtd": 4.8,
+        "stormHeight": 16,
+        "rainRate": 80,
+        "cape": 3400,
+        "tcwv": 65
+      },
+      "question": "GPM DPR vertical reflectivity profiles ($Z_e$) are used to retrieve latent heating in the atmosphere. In a deep convective cell (reflectivity > 45 dBZ above 8 km), where is the peak latent heat release located?",
+      "targetRain": "heavy",
+      "targetAlert": "orange",
+      "targetClass": "deep_convective",
+      "targetHazard": "high",
+      "explanation": "In deep convective storm cells, the peak latent heat release is located in the middle-to-upper troposphere (between 4 to 6 km altitude), driven by massive condensation and freezing of water droplets carried upward by strong updrafts. This latent heat release fuels and intensifies the storm's circulation.",
+      "hint": "Peak latent heat release in deep convection is in the mid-to-high troposphere, around 4-6 km.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "At the ocean surface (0 km), driven by sea surface evaporation.",
+          "correct": false,
+          "risk": "SURFACE HEAT WRONG",
+          "color": "var(--txt3)",
+          "tag": "Latent Heating"
+        },
+        {
+          "id": "b",
+          "text": "In the middle-to-upper troposphere (4 to 6 km altitude), driven by extensive condensation and freezing in active updrafts.",
+          "correct": true,
+          "risk": "MID-TROPOSPHERE HEATING",
+          "color": "var(--ac)",
+          "tag": "Latent Heating"
+        },
+        {
+          "id": "c",
+          "text": "Above the tropopause (18 km), driven by cosmic ray ionization.",
+          "correct": false,
+          "risk": "STRATOSPHERIC WRONG",
+          "color": "var(--gold)",
+          "tag": "Latent Heating"
+        },
+        {
+          "id": "d",
+          "text": "Directly at the melting layer (4.8 km) in stratiform clouds only.",
+          "correct": false,
+          "risk": "STRATIFORM ONLY WRONG",
+          "color": "var(--txt2)",
+          "tag": "Latent Heating"
         }
       ],
       "correctAnswer": "b"

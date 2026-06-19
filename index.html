@@ -111,6 +111,38 @@
             <circle cx="130" cy="285" r="25" fill="transparent" />
             <text x="140" y="289" class="node-label">Chennai</text>
           </g>
+          
+          <!-- New Research Stations -->
+          <g class="map-node" id="node-cherrapunji" data-station="cherrapunji">
+            <circle cx="255" cy="165" r="5" class="node-dot" />
+            <circle cx="255" cy="165" r="10" class="node-pulse" />
+            <circle cx="255" cy="165" r="25" fill="transparent" />
+            <text x="265" y="169" class="node-label">Cherrapunji</text>
+          </g>
+          <g class="map-node" id="node-gadanki" data-station="gadanki">
+            <circle cx="120" cy="275" r="5" class="node-dot" />
+            <circle cx="120" cy="275" r="10" class="node-pulse" />
+            <circle cx="120" cy="275" r="25" fill="transparent" />
+            <text x="70" y="272" class="node-label">Gadanki</text>
+          </g>
+          <g class="map-node" id="node-agartala" data-station="agartala">
+            <circle cx="235" cy="175" r="5" class="node-dot" />
+            <circle cx="235" cy="175" r="10" class="node-pulse" />
+            <circle cx="235" cy="175" r="25" fill="transparent" />
+            <text x="242" y="190" class="node-label">Agartala</text>
+          </g>
+          <g class="map-node" id="node-goa" data-station="goa">
+            <circle cx="80" cy="255" r="5" class="node-dot" />
+            <circle cx="80" cy="255" r="10" class="node-pulse" />
+            <circle cx="80" cy="255" r="25" fill="transparent" />
+            <text x="50" y="259" class="node-label">Goa</text>
+          </g>
+          <g class="map-node" id="node-bhuj" data-station="bhuj">
+            <circle cx="45" cy="175" r="5" class="node-dot" />
+            <circle cx="45" cy="175" r="10" class="node-pulse" />
+            <circle cx="45" cy="175" r="25" fill="transparent" />
+            <text x="15" y="179" class="node-label">Bhuj</text>
+          </g>
         </svg>
       </div>
       <div id="station-detail-pane" class="station-detail-pane">
@@ -186,9 +218,19 @@
 
       <!-- MET Academy panel -->
       <div class="tab-content" id="tab-academy">
+        <div class="academy-nav" style="display: flex; gap: 0.5rem; margin-bottom: 0.8rem;">
+          <button class="tab-btn active" id="academy-btn-lessons" style="font-size: 0.65rem; padding: 0.35rem 0.5rem; flex: 1;">CURRICULUM</button>
+          <button class="tab-btn" id="academy-btn-bib" style="font-size: 0.65rem; padding: 0.35rem 0.5rem; flex: 1;">BIBLIOGRAPHY</button>
+        </div>
+        
         <div class="academy-list" id="academy-list">
           <!-- Populated from edu.js -->
         </div>
+        
+        <div class="bibliography-list hide" id="bibliography-list" style="max-height: 380px; overflow-y: auto;">
+          <!-- Populated from edu.js BIBLIOGRAPHY -->
+        </div>
+        
         <div id="lesson-modal" class="lesson-modal hide">
           <button class="btn-close" id="close-lesson-btn">✕ CLOSE LESSON</button>
           <div class="lesson-body" id="lesson-body"></div>
