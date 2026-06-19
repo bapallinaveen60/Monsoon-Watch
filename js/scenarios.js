@@ -161,7 +161,38 @@ export const HISTORICAL_MISSIONS = [
         targetClass: "deep_convective",
         targetHazard: "high",
         explanation: "Extremely cold cloud tops (201 K) and highly positive Delta BTD (+4.8 K) indicate massive ice-phase towering clouds and deep convection. Very high CAPE (3200 J/kg) and rich TCWV (68 mm) are fueling rapid cyclonic intensification. Orange alert is necessary for coastal Andhra Pradesh and Odisha.",
-        hint: "Very low temperatures below 210 K imply deep convection. A positive BTD means ice-phase tops. Intense storm development is occurring."
+        hint: "Very low temperatures below 210 K imply deep convection. A positive BTD means ice-phase tops. Intense storm development is occurring.",
+        correctAnswer: "a",
+        choices: [
+          {
+            id: "a",
+            tag: "CYCLONIC CONVECTION",
+            risk: "HEAVY RAIN / ORANGE ALERT",
+            color: "var(--orange)",
+            text: "Deep ice-phase convective storm system exhibiting spiral banding. The freezing cloud tops (201 K) and positive Delta BTD (+4.8 K) indicate convective penetration. Issue an ORANGE ALERT for heavy rainfall and storm surges."
+          },
+          {
+            id: "b",
+            tag: "SHALLOW CLOUD",
+            risk: "LIGHT DRIZZLE",
+            color: "var(--grn)",
+            text: "Shallow warm rain deck with stable atmospheric indices (low CAPE). Expect light, scattered coastal showers. Issue a GREEN ALERT."
+          },
+          {
+            id: "c",
+            tag: "CIRRUS CLOUD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "High-altitude thin cirrus shield without precipitation. Delta BTD is strongly negative, showing no convective core. Issue a GREEN ALERT."
+          },
+          {
+            id: "d",
+            tag: "STRATIFORM CLOUD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Widespread stratiform rain area showing a clear melting layer bright band. CAPE is minimal. Issue a YELLOW ALERT for moderate rain."
+          }
+        ]
       },
       {
         id: "b09",
@@ -177,7 +208,38 @@ export const HISTORICAL_MISSIONS = [
         targetClass: "deep_convective",
         targetHazard: "high",
         explanation: "With storm height at 16.8 km (reaching the tropopause) and TB11 at 194 K, the convective eye-wall is highly active. A Red Alert (extreme warning) must be issued immediately as landfall is imminent, threatening heavy rain and storm surges.",
-        hint: "A storm height above 15 km is extreme convective depth. Landfall requires immediate maximum warnings."
+        hint: "A storm height above 15 km is extreme convective depth. Landfall requires immediate maximum warnings.",
+        correctAnswer: "b",
+        choices: [
+          {
+            id: "a",
+            tag: "CONVECTIVE STORM",
+            risk: "MODERATE CONVECTIVE",
+            color: "var(--orange)",
+            text: "Moderate convective storm with cloud tops reaching 10 km. Heavy localized rain is possible. Issue an ORANGE ALERT."
+          },
+          {
+            id: "b",
+            tag: "EYEWALL BURST",
+            risk: "EXTREME DEEP CONVECTION",
+            color: "var(--red)",
+            text: "Extreme deep convective eyewall reaching the tropopause (16.8 km) with freezing cloud-top temperatures (194 K) and massive instability (CAPE 3800). Landfall is imminent. Issue a RED ALERT for extreme winds and storm surges."
+          },
+          {
+            id: "c",
+            tag: "STRATIFORM SHIELD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Thick stratiform rain shield covering the coast. Reflectivity is uniform around 35 dBZ. Issue a YELLOW ALERT for moderate rain."
+          },
+          {
+            id: "d",
+            tag: "WARM RAIN",
+            risk: "LIGHT RAIN",
+            color: "var(--grn)",
+            text: "Shallow warm coastal rain system. Low risk of high winds or severe storm surge. Issue a GREEN ALERT."
+          }
+        ]
       }
     ]
   },
@@ -201,7 +263,38 @@ export const HISTORICAL_MISSIONS = [
         targetClass: "shallow_warm",
         targetHazard: "high",
         explanation: "This is a classic 'warm rain' orographic system. Stable atmospheric conditions (low CAPE) with extremely high moisture (TCWV 62 mm) pushed up mountains create shallow, liquid-phase clouds that rain persistently. The continuous accumulation poses high flood hazard.",
-        hint: "Warm temperatures (~260 K) with low CAPE and very high moisture points to liquid-phase warm rain. Persistent mountain rain leads to rapid accumulation."
+        hint: "Warm temperatures (~260 K) with low CAPE and very high moisture points to liquid-phase warm rain. Persistent mountain rain leads to rapid accumulation.",
+        correctAnswer: "c",
+        choices: [
+          {
+            id: "a",
+            tag: "CONVECTIVE BURST",
+            risk: "DEEP CONVECTIVE STORM",
+            color: "var(--red)",
+            text: "Deep ice-phase convective thunder core. Very high cloud tops above 12 km. Expect lightning and severe squalls. Issue a RED ALERT."
+          },
+          {
+            id: "b",
+            tag: "CIRRUS SHIELD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "Non-precipitating dry cirrus cloud. The warm temperatures indicate clear skies at low levels. Issue a GREEN ALERT."
+          },
+          {
+            id: "c",
+            tag: "OROGRAPHIC RAIN",
+            risk: "SHALLOW WARM RAIN",
+            color: "var(--orange)",
+            text: "Shallow warm orographic rain system. Low CAPE (450 J/kg) but high column moisture (TCWV 62 mm) creates liquid-phase clouds that dump rain continuously over the Ghats. High cumulative flood hazard. Issue an ORANGE ALERT."
+          },
+          {
+            id: "d",
+            tag: "STRATIFORM RAIN",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Classic stratiform rain shield with melting layer bright band. Reflectivity is uniform. Issue a YELLOW ALERT."
+          }
+        ]
       },
       {
         id: "b04",
@@ -217,7 +310,38 @@ export const HISTORICAL_MISSIONS = [
         targetClass: "convective",
         targetHazard: "high",
         explanation: "Monsoon depression dynamics and high moisture saturation have intensified convective activity over saturated soils. Red Alert must be issued to trigger immediate reservoir release and evacuation.",
-        hint: "99% dam level + active monsoon heavy rain = catastrophic flood risk. Red alert is mandatory."
+        hint: "99% dam level + active monsoon heavy rain = catastrophic flood risk. Red alert is mandatory.",
+        correctAnswer: "a",
+        choices: [
+          {
+            id: "a",
+            tag: "FLOOD WARNING",
+            risk: "HEAVY CONVECTIVE / RED ALERT",
+            color: "var(--red)",
+            text: "Convective precipitation cells (TB11 225 K, storm height 8.9 km) merging with offshore depression. Saturated soils and 99% dam levels pose catastrophic flood hazards. Issue a RED ALERT immediately."
+          },
+          {
+            id: "b",
+            tag: "MARINE STRATUS",
+            risk: "LIGHT RAIN",
+            color: "var(--grn)",
+            text: "Shallow warm marine rain. Expect localized sea breeze convergence showers. Low hazard. Issue a GREEN ALERT."
+          },
+          {
+            id: "c",
+            tag: "CIRRUS SHIELD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "High cirrus cloud layer. No precipitation reaching the surface. Safe for reservoir management. Issue a GREEN ALERT."
+          },
+          {
+            id: "d",
+            tag: "STRATIFORM CLOUD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Moderate stratiform rain shield. Soil can absorb the remaining run-off. Issue a YELLOW ALERT."
+          }
+        ]
       }
     ]
   },
@@ -241,7 +365,195 @@ export const HISTORICAL_MISSIONS = [
         targetClass: "convective",
         targetHazard: "high",
         explanation: "During the Northeast Monsoon, intense convective bands propagate offshore overnight. Saturated soils and steady 38 mm/h rain trigger immediate extreme flood warnings (Red Alert).",
-        hint: "Easterly wave surge over a saturated urban area requires the highest alert level."
+        hint: "Easterly wave surge over a saturated urban area requires the highest alert level.",
+        correctAnswer: "b",
+        choices: [
+          {
+            id: "a",
+            tag: "EASTERLY SHOWER",
+            risk: "LIGHT SHOWER",
+            color: "var(--gold)",
+            text: "Isolated light convective showers. Rapidly moving easterly waves will pass without accumulation. Issue a YELLOW ALERT."
+          },
+          {
+            id: "b",
+            tag: "URBAN FLOOD",
+            risk: "HEAVY CONVECTIVE / RED ALERT",
+            color: "var(--red)",
+            text: "Severe convective line (TB11 228 K, rain rate 38 mm/h) driven by a Northeast Monsoon easterly wave surge. Saturated urban area cannot handle further accumulation. Issue a RED ALERT for high urban flood hazard."
+          },
+          {
+            id: "c",
+            tag: "CIRRUS SHIELD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "Dry upper-level cirrus cloud. Sensed water vapor absorption is high but surface is dry. Issue a GREEN ALERT."
+          },
+          {
+            id: "d",
+            tag: "WARM DRIZZLE",
+            risk: "LIGHT DRIZZLE",
+            color: "var(--grn)",
+            text: "Shallow warm stratus clouds. Low-level marine convergence producing minor sea breeze drizzle. Issue a GREEN ALERT."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "m_ockhi",
+    name: "Cyclone Ockhi (December 2017)",
+    desc: "Track the rapid genesis of Cyclone Ockhi near Kanyakumari and its unusual path through the Arabian Sea towards Lakshadweep.",
+    difficulty: "Master",
+    steps: [
+      {
+        id: "ockhi_01",
+        station: "goa",
+        day: "29 Nov 2017 — 11:30 IST",
+        title: "Rapid Genesis Near Kanyakumari",
+        region: "Kanyakumari Coast (7.8N, 77.5E)",
+        mapType: "convective_burst",
+        data: { tb11: 206, btd1: 5.4, deltaBtd: 3.8, stormHeight: 14.5, rainRate: 52.0, cape: 2800, tcwv: 66 },
+        question: "A deep depression south of Sri Lanka is intensifying rapidly near Kanyakumari. TB11 has dropped to 206 K and CAPE is 2800 J/kg. What is your storm assessment?",
+        targetRain: "heavy",
+        targetAlert: "orange",
+        targetClass: "deep_convective",
+        targetHazard: "high",
+        explanation: "Rapid convective development near Kanyakumari with TB11 at 206 K and storm height at 14.5 km shows high-intensity convective updrafts. This requires an Orange Alert for severe winds and sea storm hazards.",
+        hint: "Freezing cloud tops and high wind warning signs near the tip of India require an Orange Alert.",
+        correctAnswer: "a",
+        choices: [
+          {
+            id: "a",
+            tag: "CYCLONIC GENESIS",
+            risk: "HEAVY RAIN / ORANGE ALERT",
+            color: "var(--orange)",
+            text: "Deep ice-phase convective storm system. Freezing cloud tops (206 K) and high storm height (14.5 km) indicate rapid genesis. Issue an ORANGE ALERT for coastal Tamil Nadu and Kerala."
+          },
+          {
+            id: "b",
+            tag: "WARM DRIZZLE",
+            risk: "LIGHT DRIZZLE",
+            color: "var(--grn)",
+            text: "Shallow warm stratus clouds. Low-level marine convergence producing minor sea breeze drizzle. Issue a GREEN ALERT."
+          },
+          {
+            id: "c",
+            tag: "STRATIFORM CLOUD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Moderate stratiform rain shield. Soil can absorb the remaining run-off. Issue a YELLOW ALERT."
+          },
+          {
+            id: "d",
+            tag: "CIRRUS CLOUD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "High-altitude thin cirrus shield without precipitation. Delta BTD is strongly negative. Issue a GREEN ALERT."
+          }
+        ]
+      },
+      {
+        id: "ockhi_02",
+        station: "goa",
+        day: "1 Dec 2017 — 10:30 IST",
+        title: "Cyclone Ockhi over Lakshadweep",
+        region: "Lakshadweep Islands (10.5N, 72.5E)",
+        mapType: "active_monsoon",
+        data: { tb11: 191, btd1: 8.5, deltaBtd: 5.8, stormHeight: 16.5, rainRate: 70.0, cape: 3400, tcwv: 70 },
+        question: "Cyclone Ockhi is now a Very Severe Cyclonic Storm passing directly over Lakshadweep. TB11 has plummeted to 191 K, and storm height is 16.5 km. Issue warnings.",
+        targetRain: "heavy",
+        targetAlert: "red",
+        targetClass: "deep_convective",
+        targetHazard: "high",
+        explanation: "Extremely deep convection with cloud tops breaching 16 km (reaching the tropopause) and freezing cloud-top temperatures (191 K). Issue a Red Alert immediately for Lakshadweep islands.",
+        hint: "Eye-wall convection breaching the tropopause requires Red Alert status.",
+        correctAnswer: "c",
+        choices: [
+          {
+            id: "a",
+            tag: "STRATIFORM CLOUD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Moderate stratiform rain shield covering the island. Issue a YELLOW ALERT."
+          },
+          {
+            id: "b",
+            tag: "WARM RAIN",
+            risk: "LIGHT RAIN",
+            color: "var(--grn)",
+            text: "Shallow warm coastal rain system. Low risk of high winds or severe storm surge. Issue a GREEN ALERT."
+          },
+          {
+            id: "c",
+            tag: "EYEWALL CONVECTION",
+            risk: "EXTREME DEEP CONVECTION",
+            color: "var(--red)",
+            text: "Extreme deep convective eyewall of a Very Severe Cyclonic Storm (TB11 191 K, storm height 16.5 km). Catastrophic storm winds and flooding expected. Issue a RED ALERT."
+          },
+          {
+            id: "d",
+            tag: "CIRRUS SHIELD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "High cirrus cloud layer. No precipitation reaching the surface. Issue a GREEN ALERT."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "m_uttarakhand",
+    name: "Uttarakhand Cloudburst (June 2013)",
+    desc: "Analyze the severe weather interaction between a Western Disturbance and early monsoonal surge that caused the catastrophic Kedarnath floods.",
+    difficulty: "Master",
+    steps: [
+      {
+        id: "ut_01",
+        station: "srinagar",
+        day: "16 Jun 2013 — 14:00 IST",
+        title: "Orographic Convective Merging",
+        region: "Garhwal Himalayas (30.7N, 79.0E)",
+        mapType: "orographic",
+        data: { tb11: 208, btd1: 4.8, deltaBtd: 3.2, stormHeight: 13.5, rainRate: 50.0, cape: 2400, tcwv: 62 },
+        question: "Early monsoonal surge has collided with a strong Western Disturbance over Kedarnath. TB11 is 208 K and Delta BTD is +3.2 K. Severe orographic lift is observed. What warning do you issue?",
+        targetRain: "heavy",
+        targetAlert: "red",
+        targetClass: "deep_convective",
+        targetHazard: "high",
+        explanation: "Orographic forcing combined with convective instability (CAPE 2400) has created deep cloud structures (13.5 km) dumping torrential rain (50 mm/h). Massive flash flood risk. Issue a Red Alert.",
+        hint: "Orographic blocking of merged weather fronts triggers extreme rain volumes.",
+        correctAnswer: "b",
+        choices: [
+          {
+            id: "a",
+            tag: "CIRRUS CLOUD",
+            risk: "NO PRECIPITATION",
+            color: "var(--txt3)",
+            text: "High-altitude thin cirrus shield without precipitation. Delta BTD is strongly negative. Issue a GREEN ALERT."
+          },
+          {
+            id: "b",
+            tag: "CLOUDBURST SYSTEM",
+            risk: "HEAVY CONVECTIVE / RED ALERT",
+            color: "var(--red)",
+            text: "Deep ice-phase orographic-convective storm (TB11 208 K, storm height 13.5 km). Torrents of 50 mm/h will cause severe river run-off and landslides in steep terrain. Issue a RED ALERT."
+          },
+          {
+            id: "c",
+            tag: "WARM DRIZZLE",
+            risk: "LIGHT DRIZZLE",
+            color: "var(--grn)",
+            text: "Shallow warm stratus clouds. Low-level marine convergence producing minor sea breeze drizzle. Issue a GREEN ALERT."
+          },
+          {
+            id: "d",
+            tag: "STRATIFORM CLOUD",
+            risk: "MODERATE STRATIFORM",
+            color: "var(--gold)",
+            text: "Moderate stratiform rain shield. Soil can absorb the remaining run-off. Issue a YELLOW ALERT."
+          }
+        ]
       }
     ]
   }
