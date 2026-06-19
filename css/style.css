@@ -451,6 +451,7 @@ html, body {
   display: grid;
   grid-template-columns: 0.95fr 1.05fr;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Left Panel: Viewport */
@@ -606,6 +607,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  min-height: 0;
   background: var(--bg);
   padding: 0.8rem;
   gap: 0.8rem;
