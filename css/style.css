@@ -609,7 +609,7 @@ html, body {
   overflow-y: auto;
   min-height: 0;
   background: var(--bg);
-  padding: 0.8rem;
+  padding: 0.8rem 0.8rem 2.5rem 0.8rem;
   gap: 0.8rem;
 }
 .sim-block {
@@ -619,6 +619,7 @@ html, body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 .block-header {
   background: var(--s2);
