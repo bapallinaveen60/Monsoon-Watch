@@ -10,18 +10,18 @@ import { fetchSatImage } from './imagery.js';
 // ── Constants ──────────────────────────────────────────
 const TIMER_SECS  = { beginner: 45, intermediate: 35, advanced: 30, master: 25 };
 const RANKS = [
-  { xp: 0, title: "Observer" },
-  { xp: 100, title: "Junior Analyst" },
-  { xp: 300, title: "Analyst" },
-  { xp: 700, title: "Senior Analyst" },
-  { xp: 1200, title: "Forecaster" },
-  { xp: 1800, title: "Senior Forecaster" },
-  { xp: 2500, title: "Regional Director" },
-  { xp: 3500, title: "National Director" },
-  { xp: 4800, title: "Principal Scientist" },
-  { xp: 6000, title: "Chief Scientist" },
-  { xp: 7500, title: "Senior Meteorological Advisor" },
-  { xp: 9000, title: "Director General" }
+  { xp: 0, title: "Grade I Observer" },
+  { xp: 100, title: "Grade II Observer" },
+  { xp: 300, title: "Assistant Meteorologist" },
+  { xp: 700, title: "Associate Meteorologist" },
+  { xp: 1200, title: "Meteorologist" },
+  { xp: 1800, title: "Senior Meteorologist" },
+  { xp: 2500, title: "Lead Forecaster" },
+  { xp: 3500, title: "Principal Forecaster" },
+  { xp: 4800, title: "Research Meteorologist" },
+  { xp: 6000, title: "Senior Research Analyst" },
+  { xp: 7500, title: "Chief Forecaster" },
+  { xp: 9000, title: "Lead Scientific Officer" }
 ];
 
 // ── State ──────────────────────────────────────────────
@@ -84,13 +84,13 @@ export function initGame() {
   // Launch Career Simulation
   el('launch-btn')?.addEventListener('click', () => {
     if (!G.selectedStation) {
-      alert("Please select a regional station node (glowing dot) on the map first to inspect its climate and launch a simulation shift!");
+      alert("Please select a regional station node (station pin) on the map first to inspect its climate and launch a simulation shift!");
       return;
     }
     const unlocked = isStationUnlocked(G.selectedStation);
     if (!unlocked) {
       const met = STATIONS[G.selectedStation];
-      alert(`The ${met ? met.name : 'selected'} station is locked. You need ${met ? met.unlockedAt : 0} XP to unlock this sector.`);
+      alert(`The ${met ? met.name : 'selected'} station is locked. You need ${met ? met.unlockedAt : 0} points to unlock this sector.`);
       return;
     }
     startShift("career");
@@ -193,9 +193,9 @@ function getRank(xp) {
 function getNextRankInfo(xp) {
   const current = getRank(xp);
   const currentIdx = RANKS.findIndex(r => r.title === current);
-  if (currentIdx === RANKS.length - 1) return "MAX RANK ACHIEVED";
+  if (currentIdx === RANKS.length - 1) return "MAX GRADE ACHIEVED";
   const next = RANKS[currentIdx + 1];
-  return `Next rank (${next.title}) unlocks at ${next.xp} XP`;
+  return `Next grade (${next.title}) unlocks at ${next.xp} points`;
 }
 
 function isStationUnlocked(stationId) {
@@ -205,7 +205,7 @@ function isStationUnlocked(stationId) {
 function updateCareerHUD() {
   const rank = getRank(G.xp);
   txt('career-rank', rank);
-  txt('career-xp', `${G.xp} XP`);
+  txt('career-xp', `${G.xp} pts`);
   txt('career-next-rank', getNextRankInfo(G.xp));
   
   // Progress bar calculation
@@ -314,11 +314,11 @@ function selectStation(id) {
   } else {
     detail.innerHTML = `
       <h3 style="color:var(--red)">🔒 STATION SECTOR LOCKED</h3>
-      <p>This regional radar network is currently out of range. Reach <strong>${met.unlockedAt} XP</strong> to decrypt live telemetry feeds.</p>
+      <p>This regional radar network is currently out of range. Reach <strong>${met.unlockedAt} points</strong> to decrypt live telemetry feeds.</p>
     `;
     if (launchBtn) {
       launchBtn.innerHTML = `
-        <span>STATION LOCKED (XP REQUIRED)</span>
+        <span>STATION LOCKED (POINTS REQUIRED)</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
       `;
       launchBtn.classList.add('disabled-btn');
@@ -454,8 +454,8 @@ function handleLessonCompleted(lessonId) {
   if (G.completedLessons.includes(lessonId)) return;
   G.completedLessons.push(lessonId);
   saveProfile();
-  addXP(30); // Reward 30 XP for passing lesson
-  alert("Certification Quiz Passed! +30 XP awarded. Dynamic lessons updated.");
+  addXP(30); // Reward 30 points for passing lesson
+  alert("Certification Quiz Passed! +30 points awarded. Dynamic lessons updated.");
   initAcademy();
 }
 
@@ -615,7 +615,7 @@ function renderSimulationTelemetry() {
   
   txt('hud-callsign', `ST-ID: ${sc.id.toUpperCase()}`);
   txt('q-hud', `STEP ${G.qIdx + 1} / ${G.activeScenarios.length}`);
-  txt('score-hud', `${G.score} XP`);
+  txt('score-hud', `${G.score} pts`);
   
   txt('sc-day', sc.day);
   txt('sc-title', sc.title);
@@ -675,11 +675,11 @@ function submitForecast() {
   if (result.score === 100) {
     G.correct++;
     outcomeClass = "correct";
-    logOp(`[ACC] CORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+100 XP) at ${sc.title}`, "correct");
+    logOp(`[ACC] CORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+100 pts) at ${sc.title}`, "correct");
   } else {
     G.wrong++;
     outcomeClass = "wrong";
-    logOp(`[ACC] INCORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+0 XP) at ${sc.title}`);
+    logOp(`[ACC] INCORRECT FORECAST Option ${G.selectedChoiceId.toUpperCase()} (+0 pts) at ${sc.title}`);
   }
   
   // Save log history
@@ -737,7 +737,7 @@ function endShift() {
   const pct = maxPossibleXp > 0 ? Math.round(G.score / maxPossibleXp * 100) : 0;
   
   txt('score-pct', `${pct}%`);
-  txt('score-pts', `${G.score} XP`);
+  txt('score-pts', `${G.score} pts`);
   txt('stat-correct', G.correct);
   txt('stat-wrong', G.wrong);
   txt('stat-skipped', G.partial);
@@ -766,7 +766,7 @@ function endShift() {
       card.innerHTML = `
         <div class="hr-header">
           <span>STEP ${idx + 1}: ${h.title}</span>
-          <span style="color:${h.outcomeClass==='correct'?'var(--grn)':h.outcomeClass==='partial'?'var(--gold)':'var(--red)'}">${h.score}/100 XP</span>
+          <span style="color:${h.outcomeClass==='correct'?'var(--grn)':h.outcomeClass==='partial'?'var(--gold)':'var(--red)'}">${h.score}/100 pts</span>
         </div>
         <div class="hr-details">${h.feedbackHtml}</div>
       `;

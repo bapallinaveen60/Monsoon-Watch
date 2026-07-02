@@ -1,5 +1,5 @@
 // ============================================================
-// MONSOON WATCH V2 — AI Forecaster Assistant & Co-Pilot Engine
+// INSAT-Sim — AI Analyst Assistant & Co-Pilot Engine
 // ============================================================
 
 export function getCopilotBriefing(sc) {

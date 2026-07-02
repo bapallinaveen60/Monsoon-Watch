@@ -1,4 +1,4 @@
-name: Deploy Monsoon Watch to GitHub Pages
+name: Deploy INSAT-Sim to GitHub Pages
 
 on:
   push:

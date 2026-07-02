@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════
-// MONSOON WATCH — Service Worker
+// INSAT-Sim — Service Worker
 // Uses relative paths so it works on GitHub Pages
 // (e.g. https://user.github.io/satellite_meteorology_quiz/)
 // ═══════════════════════════════════════════════════════
 
-const APP_VERSION = 'v2.1.4';
+const APP_VERSION = 'v2.2.0';
 const SHELL_CACHE = 'mw-shell-' + APP_VERSION;
 const IMAGE_CACHE = 'mw-images-' + APP_VERSION;
 const FONT_CACHE  = 'mw-fonts-'  + APP_VERSION;

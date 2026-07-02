@@ -1,5 +1,5 @@
 // ============================================================
-// MONSOON WATCH V2 — Educational Academy Curriculum
+// INSAT-Sim — Educational Academy Curriculum
 // ============================================================
 
 export const LESSONS = [

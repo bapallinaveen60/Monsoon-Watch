@@ -1,5 +1,5 @@
 // ============================================================
-// MONSOON WATCH V2 — Professional Scenario and Station Database
+// INSAT-Sim — Professional Scenario and Station Database
 // ============================================================
 
 export const STATIONS = {

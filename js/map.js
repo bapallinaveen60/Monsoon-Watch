@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// MONSOON WATCH — Satellite Map Renderer v3
+// INSAT-Sim — Satellite Map Renderer v3
 //
 // Two-phase rendering:
 //   Phase 1 (instant): dark placeholder + loading shimmer

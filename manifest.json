@@ -1,13 +1,13 @@
 {
-  "name": "Monsoon Watch",
-  "short_name": "Monsoon Watch",
-  "description": "Satellite Meteorology Strategy Game — India Operations. Read real satellite data, make forecast decisions, learn cloud physics.",
+  "name": "INSAT-Sim",
+  "short_name": "INSAT-Sim",
+  "description": "Satellite Meteorology Training Portal — India Operations. Read real satellite data, make forecast decisions, learn cloud physics.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#080d18",
-  "theme_color": "#080d18",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
   "categories": ["education", "games"],
   "lang": "en",
   "icons": [

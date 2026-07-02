@@ -1,9 +1,8 @@
-# Monsoon Watch — Satellite Meteorology Strategy Game
+# INSAT-Sim — Satellite Meteorology Training Portal
 
 ## Setup
 1. Open `index.html` in any modern browser.
-2. Enter your Anthropic API key (obtain one at https://console.anthropic.com).
-3. Select a level and click **LAUNCH MISSION**.
+2. Select an operational difficulty level and click **BEGIN FORECAST SHIFT**.
 
 ## File structure
 ```

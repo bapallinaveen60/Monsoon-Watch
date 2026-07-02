@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// MONSOON WATCH — Real Satellite Imagery via NASA GIBS
+// INSAT-Sim — Real Satellite Imagery via NASA GIBS
 // Uses NASA Worldview Snapshots API (public domain)
 // https://wvs.earthdata.nasa.gov/api/v1/snapshot
 // ═══════════════════════════════════════════════════════
