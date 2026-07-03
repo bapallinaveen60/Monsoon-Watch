@@ -18,6 +18,8 @@
   --txt:  #f9fafb; /* Slate-50 high-contrast white */
   --txt2: #d1d5db; /* Slate-300 standard gray text */
   --txt3: #9ca3af; /* Slate-400 muted text */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
   --fh:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --fm:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --r:    4px; 
@@ -378,10 +380,10 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.4rem 1.2rem;
+  padding: calc(0.4rem + var(--safe-top)) 1.2rem 0.4rem;
   background: var(--s1);
   border-bottom: 1px solid var(--bdr);
-  height: 48px;
+  height: calc(48px + var(--safe-top));
   flex-shrink: 0;
   z-index: 100;
 }
@@ -891,7 +893,8 @@ html, body {
     grid-template-columns: repeat(3, 1fr);
     background: var(--s2);
     border-bottom: 1px solid var(--bdr);
-    height: 48px;
+    padding-top: var(--safe-top);
+    height: calc(48px + var(--safe-top));
     flex-shrink: 0;
   }
   
@@ -906,6 +909,7 @@ html, body {
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    padding-top: 4px; /* Slight optical adjustment under status bar */
   }
   
   .m-nav-btn.active {
@@ -917,11 +921,12 @@ html, body {
   
   .ops-grid {
     grid-template-columns: 1fr !important;
-    height: calc(100vh - 48px) !important;
+    height: calc(100vh - 48px - var(--safe-top) - var(--safe-bottom)) !important;
     overflow-y: auto !important;
     display: flex !important;
     flex-direction: column !important;
     padding: 0.50rem;
+    padding-bottom: calc(0.50rem + var(--safe-bottom));
     gap: 0.8rem;
   }
 
@@ -955,6 +960,7 @@ html, body {
   .telemetry-bar {
     grid-template-columns: repeat(2, 1fr) !important;
     height: auto !important;
+    padding-bottom: var(--safe-bottom) !important;
   }
   
   .telemetry-cell {
@@ -1058,6 +1064,17 @@ html, body {
 
   .s-cnt-lbl {
     font-size: 0.7rem !important;
+  }
+
+  .debrief-wrap-v2 {
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    height: 100% !important;
+    padding: 1.2rem !important;
+    padding-top: calc(1.2rem + var(--safe-top)) !important;
+    padding-bottom: calc(1.2rem + var(--safe-bottom)) !important;
   }
 }
 
