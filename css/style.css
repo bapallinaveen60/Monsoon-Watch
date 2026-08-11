@@ -2,22 +2,22 @@
    INSAT-Sim — Professional Design System
    ═══════════════════════════════════════════════════════ */
 :root {
-  --bg:   #0b0f19; /* Solid deep slate background */
-  --s1:   #111827; /* Dark slate card background */
-  --s2:   #1f2937; /* Medium slate highlight background */
-  --s3:   #374151; /* Slate borders/dividers */
-  --s4:   #4b5563; /* Muted gray text/borders */
-  --bdr:  #1f2937; /* Flat border color */
-  --bdr2: #374151; /* Active flat border color */
-  --acc:  #2563eb; /* Professional blue accent */
-  --grn:  #10b981; /* Standard warning green */
-  --red:  #ef4444; /* Standard warning red */
-  --gold: #eab308; /* Standard warning yellow */
-  --org:  #f97316; /* Standard warning orange */
-  --pur:  #8b5cf6; /* Standard warning violet */
-  --txt:  #f9fafb; /* Slate-50 high-contrast white */
-  --txt2: #d1d5db; /* Slate-300 standard gray text */
-  --txt3: #9ca3af; /* Slate-400 muted text */
+  --bg:   #f3f2f2; /* Light ground background */
+  --s1:   #ffffff; /* White card background */
+  --s2:   #f9f9f9; /* Light grey highlight background */
+  --s3:   #dcdbd9; /* Light grey border/divider */
+  --s4:   #b6b4b0; /* Muted grey text/border */
+  --bdr:  #dcdbd9; /* Flat default border */
+  --bdr2: #b68235; /* Active border (accent) */
+  --acc:  #b68235; /* Warm gold/bronze accent */
+  --grn:  #2e7d32; /* Rich organic green */
+  --red:  #c62828; /* Rich organic red */
+  --gold: #b68235; /* Gold/bronze warnings */
+  --org:  #d84315; /* Rich organic orange */
+  --pur:  #6a1b9a; /* Rich organic purple */
+  --txt:  #201f1d; /* Dark charcoal primary text */
+  --txt2: #4a4947; /* Medium charcoal body text */
+  --txt3: #757370; /* Muted light charcoal text */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --fh:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -240,9 +240,9 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  background: var(--acc);
-  color: #fff;
-  border: none;
+  background: transparent;
+  color: var(--acc);
+  border: 2px solid var(--acc);
   border-radius: var(--r);
   padding: 0.85rem;
   font-family: var(--fh);
@@ -253,7 +253,7 @@ html, body {
   transition: all 0.15s;
   margin-top: 1rem;
 }
-.ops-launch-btn:hover { background: #1d4ed8; box-shadow: none; }
+.ops-launch-btn:hover { background: rgba(182, 130, 53, 0.08); box-shadow: none; }
 .ops-launch-btn.disabled-btn {
   background: var(--s3);
   color: var(--txt3);
@@ -556,12 +556,12 @@ html, body {
   transition: all 0.15s;
 }
 .btn-band:hover { border-color: var(--bdr2); }
-.btn-band.active { background: var(--acc); border-color: var(--acc); color: #000; font-weight: 700; }
-.btn-band.required { border-color: var(--red); color: var(--red); animation: pulseRedBdr 1s infinite alternate; }
+.btn-band.active { background: rgba(182, 130, 53, 0.12); border-color: var(--acc); color: var(--acc); font-weight: 700; }
+.btn-band.required { border-color: var(--red); color: var(--red); animation: pulseRedBdr 1.2s infinite alternate; }
 
 @keyframes pulseRedBdr {
-  0% { box-shadow: none; }
-  100% { box-shadow: 0 0 6px var(--red); }
+  0% { border-color: var(--s3); }
+  100% { border-color: var(--red); }
 }
 
 /* Switch Toggle widget */
@@ -686,9 +686,9 @@ html, body {
   margin: 0 0.85rem 0.85rem;
 }
 .btn-submit-forecast {
-  background: var(--acc);
-  color: #fff;
-  border: none;
+  background: transparent;
+  color: var(--acc);
+  border: 2px solid var(--acc);
   font-family: var(--fh);
   font-weight: 700;
   font-size: 0.9rem;
@@ -698,7 +698,7 @@ html, body {
   transition: all 0.15s;
   box-shadow: none;
 }
-.btn-submit-forecast:hover { background: #1d4ed8; box-shadow: none; }
+.btn-submit-forecast:hover { background: rgba(182, 130, 53, 0.08); box-shadow: none; }
 
 .btn-skip-forecast {
   background: rgba(255, 255, 255, 0.02);
@@ -861,6 +861,55 @@ html, body {
 
 .acc-check { color: var(--grn); }
 .acc-err { color: var(--red); }
+
+.debrief-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--acc);
+  border: 2px solid var(--acc);
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.85rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.btn-primary:hover {
+  background: rgba(182, 130, 53, 0.08);
+}
+
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--txt2);
+  border: 1px solid var(--s3);
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.85rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.btn-ghost:hover {
+  background: var(--s2);
+  border-color: var(--s4);
+  color: var(--txt);
+}
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE DESIGN SYSTEM OVERRIDES
@@ -1075,25 +1124,25 @@ html, body {
 
 .choice-card:hover:not(.disabled) {
   border-color: var(--bdr2);
-  background: rgba(255, 255, 255, 0.02);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--s2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .choice-card.selected {
   border-color: var(--acc);
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(182, 130, 53, 0.08);
   box-shadow: none;
 }
 
 .choice-card.correct-ans {
   border-color: var(--grn) !important;
-  background: rgba(16, 185, 129, 0.08) !important;
+  background: rgba(46, 125, 50, 0.08) !important;
   box-shadow: none !important;
 }
 
 .choice-card.wrong-ans {
   border-color: var(--red) !important;
-  background: rgba(239, 68, 68, 0.08) !important;
+  background: rgba(198, 40, 40, 0.08) !important;
   box-shadow: none !important;
 }
 
@@ -1108,7 +1157,7 @@ html, body {
   width: 24px;
   height: 24px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--s2);
   border: 1px solid var(--bdr);
   font-family: var(--fh);
   font-weight: 700;
