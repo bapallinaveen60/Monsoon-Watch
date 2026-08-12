@@ -106,7 +106,7 @@ html, body {
   font-family: var(--fh);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--txt);
   letter-spacing: -0.01em;
 }
 .card-header.border-acc { border-bottom-color: rgba(37, 99, 235, 0.3); }
@@ -179,9 +179,9 @@ html, body {
   flex-direction: column;
   justify-content: center;
 }
-.station-detail-pane h3 { font-family: var(--fh); font-size: 1rem; color: #fff; margin-bottom: 0.3rem; }
+.station-detail-pane h3 { font-family: var(--fh); font-size: 1rem; color: var(--txt); margin-bottom: 0.3rem; }
 .sd-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
-.sd-cell { background: rgba(255,255,255,0.02); padding: 0.4rem; border-radius: 2px; border: 1px solid rgba(255,255,255,0.03); }
+.sd-cell { background: var(--s2); padding: 0.4rem; border-radius: 2px; border: 1px solid var(--bdr); }
 .sd-label { font-size: 0.58rem; color: var(--txt3); display: block; }
 .sd-val { font-size: 0.72rem; color: var(--txt2); font-weight: 700; }
 
@@ -317,7 +317,7 @@ html, body {
   transition: all 0.2s;
 }
 .lesson-card-item:hover, .history-card-item:hover { border-color: var(--bdr2); background: var(--s3); }
-.lesson-card-item h4, .history-card-item h4 { font-family: var(--fh); font-size: 0.85rem; color: #fff; margin-bottom: 0.15rem; }
+.lesson-card-item h4, .history-card-item h4 { font-family: var(--fh); font-size: 0.85rem; color: var(--txt); margin-bottom: 0.15rem; }
 .lesson-card-item p, .history-card-item p { font-size: 0.7rem; color: var(--txt2); line-height: 1.3; }
 
 /* Lesson Detail Modal view overlay */
@@ -345,7 +345,7 @@ html, body {
 }
 .btn-close:hover { border-color: var(--red); color: var(--red); }
 .lesson-body { font-size: 0.78rem; line-height: 1.5; color: var(--txt2); }
-.lesson-body h3 { font-family: var(--fh); color: #fff; font-size: 1.1rem; margin: 0.8rem 0 0.4rem; }
+.lesson-body h3 { font-family: var(--fh); color: var(--txt); font-size: 1.1rem; margin: 0.8rem 0 0.4rem; }
 .lesson-body ul { margin-left: 1rem; margin-bottom: 0.8rem; }
 .lesson-body p { margin-bottom: 0.8rem; }
 
@@ -355,7 +355,7 @@ html, body {
   border-top: 1px dashed var(--bdr);
 }
 .lesson-quiz-section h4 { font-family: var(--fh); color: var(--acc); margin-bottom: 0.4rem; }
-.quiz-q { font-size: 0.78rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+.quiz-q { font-size: 0.78rem; font-weight: 700; color: var(--txt); margin-bottom: 0.5rem; }
 .quiz-choices { display: flex; flex-direction: column; gap: 0.35rem; }
 .quiz-choice-btn {
   background: var(--s2);
@@ -402,7 +402,7 @@ html, body {
   font-family: var(--fh);
   font-size: 0.95rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--txt);
   line-height: 1.1;
 }
 .hud-meta-rank { font-size: 0.58rem; color: var(--txt3); }
@@ -629,11 +629,11 @@ html, body {
   color: var(--txt2);
   margin-right: auto;
 }
-.block-header.border-acc { border-bottom-color: rgba(0, 242, 254, 0.3); }
+.block-header.border-acc { border-bottom-color: rgba(182, 130, 53, 0.3); }
 .brief-timestamp { font-size: 0.62rem; color: var(--txt3); }
 
 .briefing-content { padding: 0.85rem; }
-.briefing-content h4 { font-family: var(--fh); font-size: 0.95rem; color: #fff; margin-bottom: 0.2rem; }
+.briefing-content h4 { font-family: var(--fh); font-size: 0.95rem; color: var(--txt); margin-bottom: 0.2rem; }
 .briefing-desc { font-size: 0.75rem; color: var(--txt2); line-height: 1.4; margin-bottom: 0.4rem; }
 .briefing-prompt { font-size: 0.75rem; color: var(--acc); font-weight: 700; }
 
@@ -795,7 +795,7 @@ html, body {
   max-height: 90vh;
 }
 .debrief-header-v2 { display: flex; flex-direction: column; gap: 0.3rem; }
-.debrief-header-v2 h2 { font-family: var(--fh); font-size: 1.6rem; font-weight: 800; color: #fff; }
+.debrief-header-v2 h2 { font-family: var(--fh); font-size: 1.6rem; font-weight: 800; color: var(--txt); }
 .debrief-header-v2 p { font-size: 0.78rem; color: var(--txt2); }
 
 .debrief-stats-grid {
@@ -803,10 +803,10 @@ html, body {
   grid-template-columns: auto 1fr;
   gap: 2rem;
   align-items: center;
-  background: rgba(255,255,255,0.01);
+  background: var(--s2);
   padding: 1.2rem;
   border-radius: var(--r);
-  border: 1px solid rgba(255,255,255,0.02);
+  border: 1px solid var(--bdr);
 }
 .radial-ring-box { position: relative; width: 110px; height: 110px; }
 .radial-ring-inner {
@@ -817,12 +817,12 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-.ring-pct { font-family: var(--fh); font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1; }
+.ring-pct { font-family: var(--fh); font-size: 1.6rem; font-weight: 800; color: var(--txt); line-height: 1; }
 .ring-sub { font-size: 0.6rem; color: var(--txt3); margin-top: 0.2rem; }
 
 .stats-counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
 .s-counter-card {
-  background: var(--s2);
+  background: var(--s1);
   border: 1px solid var(--bdr);
   border-radius: var(--r);
   padding: 0.75rem;
@@ -830,7 +830,7 @@ html, body {
   flex-direction: column;
   align-items: center;
 }
-.s-cnt-num { font-family: var(--fh); font-size: 1.5rem; font-weight: 800; color: #fff; }
+.s-cnt-num { font-family: var(--fh); font-size: 1.5rem; font-weight: 800; color: var(--txt); }
 .s-cnt-lbl { font-size: 0.6rem; color: var(--txt3); }
 
 .debrief-unlocks-box {
@@ -843,7 +843,7 @@ html, body {
 }
 
 .debrief-results-history { display: flex; flex-direction: column; gap: 0.75rem; }
-.debrief-results-history h3 { font-family: var(--fh); font-size: 0.9rem; color: #fff; border-bottom: 1px solid var(--bdr); padding-bottom: 0.3rem; }
+.debrief-results-history h3 { font-family: var(--fh); font-size: 0.9rem; color: var(--txt); border-bottom: 1px solid var(--bdr); padding-bottom: 0.3rem; }
 .review-history-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 250px; overflow-y: auto; }
 
 .history-review-card {
@@ -856,7 +856,7 @@ html, body {
 .history-review-card.correct { border-left: 3px solid var(--grn); }
 .history-review-card.partial { border-left: 3px solid var(--gold); }
 .history-review-card.wrong { border-left: 3px solid var(--red); }
-.hr-header { display: flex; justify-content: space-between; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+.hr-header { display: flex; justify-content: space-between; font-weight: 700; color: var(--txt); margin-bottom: 0.25rem; }
 .hr-details { font-size: 0.68rem; color: var(--txt2); line-height: 1.3; }
 
 .acc-check { color: var(--grn); }
@@ -1247,7 +1247,7 @@ html, body {
 }
 .bib-title {
   font-weight: 700;
-  color: #fff;
+  color: var(--txt);
   font-size: 0.75rem;
   line-height: 1.3;
 }
@@ -1256,8 +1256,8 @@ html, body {
   font-weight: 700;
   padding: 0.05rem 0.3rem;
   border-radius: 2px;
-  background: rgba(0, 242, 254, 0.1);
-  border: 1px solid rgba(0, 242, 254, 0.2);
+  background: rgba(182, 130, 53, 0.1);
+  border: 1px solid rgba(182, 130, 53, 0.2);
   color: var(--acc);
   text-transform: uppercase;
   flex-shrink: 0;
