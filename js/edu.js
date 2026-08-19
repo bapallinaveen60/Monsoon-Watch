@@ -371,13 +371,7 @@ export const BIBLIOGRAPHY = [
     cat: "Machine Learning & Deep Learning",
     summary: "Develops machine learning algorithms using GOES-16 ABI multispectral data and NWP variables, identifying that CAPE and lapse rates are critical for convective classification while moisture indices govern stratiform areas."
   },
-  {
-    title: "Precipitation Type Classification with INSAT 3DR and GPM DPR Satellite Observations",
-    authors: "Atheeswaran. B (Supervised by Dr. Shruti Upadhyaya) (2024)",
-    journal: "M.Tech Thesis, Department of Climate Change, IIT Hyderabad",
-    cat: "Theses & Presentations",
-    summary: "First study to construct collocated datasets for INSAT-3DR and GPM DPR Ku-band over India. Trains Balanced Random Forest and U-Net semantic segmentation models, highlighting the superiority of U-Net patch classification."
-  },
+
   {
     title: "Multi-index rain detection: A new approach for regional rain area detection",
     authors: "Shruti Upadhyaya & Raaj Ramsankaran (2014)",
